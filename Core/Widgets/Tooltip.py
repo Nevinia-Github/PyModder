@@ -21,7 +21,7 @@ class ToolTipBase:
 
     def schedule(self):
         self.unschedule()
-        self.id = self.button.after(500, self.showtip)
+        self.id = self.button.after(0, self.showtip)
 
     def unschedule(self):
         id = self.id
@@ -36,8 +36,8 @@ class ToolTipBase:
         # otherwise when the mouse enters the tip window we get
         # a leave event and it disappears, and then we get an enter
         # event and it reappears, and so on forever :-(
-        x = self.button.winfo_rootx() + 20
-        y = self.button.winfo_rooty() + self.button.winfo_height() + 1
+        x = self.button.winfo_rootx()
+        y = self.button.winfo_rooty() + self.button.winfo_height()
         self.tipwindow = tw = Toplevel(self.button)
         tw.wm_overrideredirect(1)
         tw.wm_geometry("+%d+%d" % (x, y))

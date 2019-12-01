@@ -4,7 +4,7 @@ import json
 class Config:
     def __init__(self, file):
         self.file = file
-        with open(self.file, "r") as f:
+        with open(self.file, "r", encoding="utf8") as f:
             self.dic = json.load(f)
 
     def get(self, key, default):
@@ -33,5 +33,5 @@ class Config:
                     value[i] = val
 
     def save(self):
-        with open(self.file, "w") as f:
+        with open(self.file, "w", encoding="utf8") as f:
             f.write(json.dumps(self.dic, indent=4))

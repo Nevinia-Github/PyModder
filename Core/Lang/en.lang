@@ -1,0 +1,23 @@
+parameters_tooltip: Parameters
+open_tooltip: Open
+save_tooltip: Save
+new_tooltip: New
+launch_tooltip: Launch
+build_tooltip: Build
+
+elements_title: Elements
+
+properties_title: Properties
+
+title_param: Parameters
+
+title_general: General Parameters
+
+title_projet: Project Parameters
+
+title_informations: PyModder
+create_informations: Create by Nevinia
+version_informations: Version: {}
+pyver_informations: Version Python: {}
+tkver_informations: Version Tkinter: {}
+tclver_informations: Version Tcl: {}
