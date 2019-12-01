@@ -12,6 +12,8 @@ properties_title: Properties
 title_param: Parameters
 
 title_general: General Parameters
+lang_general: Language:
+valide_general: Validate
 
 title_projet: Project Parameters
 

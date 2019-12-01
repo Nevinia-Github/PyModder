@@ -12,11 +12,13 @@ properties_title: Propriétés
 title_param: Paramètres
 
 title_general: Paramètres Généraux
+lang_general: Langue :
+valide_general: Valider
 
 title_projet: Paramètres du Projet
 
 title_informations: PyModder
-create_informations: Create by Nevinia
+create_informations: Créer par Nevinia
 version_informations: Version: {}
 pyver_informations: Version Python: {}
 tkver_informations: Version Tkinter: {}

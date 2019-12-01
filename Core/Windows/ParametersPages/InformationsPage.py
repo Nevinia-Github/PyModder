@@ -11,7 +11,7 @@ class InformationsPage(Frame):
         version_python = ".".join(str(i) for i in version_info[:3])
         version = ".".join(str(i) for i in version_info[:3])
 
-        self.labels = {
+        self.widgets = {
             "title": Label(self, text=param.main.lang.get_translate("title_informations", "PyModder"),
                            font=("Arial", "18")),
             "create": Label(self, text=param.main.lang.get_translate("create_informations", "Create by Nevinia"),
@@ -26,7 +26,7 @@ class InformationsPage(Frame):
                                                                      TclVersion), font=("Arial", "14"))
         }
 
-        for k, v in enumerate(self.labels.values()):
+        for k, v in enumerate(self.widgets.values()):
             if k == 0:
                 v.grid(row=k, column=0, sticky="NEWS", pady=20, padx=250)
             else:
