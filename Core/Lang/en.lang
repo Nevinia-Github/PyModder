@@ -6,6 +6,7 @@ launch_tooltip: Launch
 build_tooltip: Build
 
 elements_title: Elements
+elements_add: Add Element
 
 properties_title: Properties
 
@@ -15,7 +16,9 @@ title_general: General Parameters
 lang_general: Language:
 valide_general: Validate
 
-title_projet: Project Parameters
+title_project: Project Parameters
+name_project: Name :
+valide_project: Validate
 
 title_informations: PyModder
 create_informations: Create by Nevinia

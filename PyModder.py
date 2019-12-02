@@ -29,6 +29,8 @@ class PyModder:
         self.screen.state("zoomed")
 
         self.project = self.load_project(self.conf.get("last_project", ""))
+        self.conf.set("last_project", self.project.name)
+        self.conf.save()
 
         self.screen.columnconfigure(1, weight=1)
         self.screen.columnconfigure(3, weight=3)
