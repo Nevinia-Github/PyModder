@@ -45,4 +45,4 @@ class ProjectPage(Frame):
 
         if change:
             self.param.main.project.save()
-            showwarning("Changement Validé", "Veuillez redémarrer pour prendre en compte les changements.")
+            self.param.main.screen.title(name + " - PyModder")
