@@ -1,9 +1,12 @@
 from tkinter.ttk import Frame, Button, Separator
 from tkinter import PhotoImage, VERTICAL
+from tkinter.messagebox import showinfo, showerror
 from Core.Widgets.Tooltip import ToolTip
 from Core.Windows.ParametersWindow import ParametersWindow
 
 import os
+import subprocess
+import shutil
 
 
 class MenuBar(Frame):
@@ -57,7 +60,21 @@ class MenuBar(Frame):
         self.param_btn.grid(row=0, column=7, sticky="NSEW", padx=5, pady=5)
 
     def build(self):
-        os.system("cd " + self.main.project.paths["Folder"] + r" && .\gradlew.bat build")
+        showinfo("Compilation à venir", "La compilation va être effectuée.\nElle peut prendre quelques minutes et "
+                                        "l'application peut être gelée. Attendez le temps de la compilation.\n"
+                                        "Appuyez sur 'Ok' pour continuer.")
+        sub = subprocess.run(["cd", self.main.project.paths["Folder"], "&&", r".\gradlew.bat", "build"],
+                             capture_output=True, shell=True)
+        path = os.path.join(self.main.project.paths["Folder"], "build", "libs",
+                            self.main.project.name + "-" + self.main.project.version + ".jar")
+        shutil.copy(path, os.path.join(self.main.project.paths["Folder"],
+                                       self.main.project.name + "-" + self.main.project.version + ".jar"))
+        if sub.stderr != '':
+            showinfo("Compilation finie",
+                     "Compilation finie.\nVotre fichier est disponible dans le dossier du mods.\nSon nom est " +
+                     self.main.project.name + "-" + self.main.project.version + ".jar")
+        else:
+            showerror("Compilation finie", "La compilation a échoué.\nErreur : "+sub.stderr)
 
     def open_param(self):
         ParametersWindow(self.main)
