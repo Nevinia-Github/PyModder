@@ -17,7 +17,12 @@ lang_general: Language:
 valide_general: Validate
 
 title_project: Project Parameters
-name_project: Name :
+name_project: Name:
+modid_project: Mod ID:
+version_project: Version:
+url_project: URL:
+authors_project: Authors:
+description_project: Description:
 valide_project: Validate
 
 title_informations: PyModder

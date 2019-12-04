@@ -18,6 +18,11 @@ valide_general: Valider
 
 title_project: Paramètres du Projet
 name_project: Nom :
+modid_project: ID Mod :
+version_project: Version :
+url_project: URL :
+authors_project: Auteurs :
+description_project: Description :
 valide_project: Valider
 
 title_informations: PyModder

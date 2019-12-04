@@ -1,139 +1,4 @@
-import os
-import json
-import requests
-import io
-import zipfile
-import shutil
 
-from Core.JavaClass import MainClass
-
-
-class Project:
-    def __init__(self, name):
-        self.paths = {
-            "Folder": os.path.join(os.path.dirname(__file__), "..", "..", "Mods", name)
-        }
-        self.paths["Java"] = os.path.join(self.paths["Folder"], "src", "main", "java")
-        self.paths["Ressources"] = os.path.join(self.paths["Folder"], "src", "main", "resources")
-        self.name = name
-        self.old_name = name
-
-        if not os.path.exists(self.paths["Folder"]):
-            self.version = "1.0.0"
-            self.modid = name.strip().lower()
-            self.url = ""
-            self.credits = "PyModder, MFF anf Forge guys"
-            self.authors = "Author"
-            self.description = "Coming Soon"
-            self.create_folder()
-        else:
-            with open(os.path.join(self.paths["Folder"], "project.json"), "r") as f:
-                datas = json.load(f)
-            self.version = datas["version"]
-            self.modid = datas["modid"]
-            self.url = datas["url"]
-            self.credits = datas["credits"]
-            self.authors = datas["authors"]
-            self.description = datas["description"]
-            self.paths["Main"] = os.path.join(self.paths["Java"], "fr", "pymodder", self.modid)
-
-        self.old_modid = self.modid
-
-    def save(self):
-        datas = {
-            "modid": self.modid,
-            "version": self.version,
-            "url": self.url,
-            "credits": self.credits,
-            "authors": self.authors,
-            "description": self.description
-        }
-        with open(os.path.join(self.paths["Folder"], "project.json"), "w") as f:
-            json.dump(datas, f, indent=4)
-
-        if self.old_name != self.name:
-            path = os.path.join(os.path.dirname(__file__), "..", "..", "Mods", self.name)
-            os.rename(self.paths["Folder"], path)
-            self.paths["Folder"] = path
-            self.paths["Java"] = os.path.join(self.paths["Folder"], "src", "main", "java")
-            self.paths["Ressources"] = os.path.join(self.paths["Folder"], "src", "main", "resources")
-            self.paths["Main"] = os.path.join(self.paths["Java"], "fr", "pymodder", self.modid)
-            os.rename(os.path.join(self.paths["Main"], self.old_name+".java"),
-                      os.path.join(self.paths["Main"], self.name+".java"))
-            self.old_name = self.name
-
-        if self.old_modid != self.modid:
-            path = os.path.join(self.paths["Java"], "fr", "pymodder", self.modid)
-            old_path = os.path.join(self.paths["Java"], "fr", "pymodder", self.old_modid)
-            os.rename(old_path, path)
-            self.paths["Main"] = path
-            self.old_modid = self.modid
-
-        self.edit_toml()
-        self.edit_build()
-        self.edit_main()
-
-    def create_folder(self):
-        os.makedirs(self.paths["Folder"])
-        datas = {
-            "version": self.version,
-            "modid": self.modid,
-            "url": self.url,
-            "credits": self.credits,
-            "authors": self.authors,
-            "description": self.description
-        }
-        with open(os.path.join(self.paths["Folder"], "project.json"), "w") as f:
-            json.dump(datas, f, indent=4)
-        forge = "https://files.minecraftforge.net/maven/net/minecraftforge/forge/1.14.4-28.1.0/" \
-                "forge-1.14.4-28.1.0-mdk.zip"
-        r = requests.get(forge)
-        z = zipfile.ZipFile(io.BytesIO(r.content))
-        z.extractall(self.paths["Folder"])
-        shutil.rmtree(os.path.join(self.paths["Java"], "com"))
-        os.makedirs(os.path.join(self.paths["Java"], "fr", "pymodder", self.modid))
-        self.paths["Main"] = os.path.join(self.paths["Java"], "fr", "pymodder", self.modid)
-        self.edit_toml()
-        self.edit_build()
-        self.edit_main()
-
-    def edit_main(self):
-        main = MainClass.MainClass(self)
-        main.save()
-
-    def edit_toml(self):
-        toml = """
-modLoader="javafml"
-loaderVersion="[28,)"
-
-[[mods]]
-modId="{0}"
-version="{1}"
-displayName="{2}"
-displayURL="{3}"
-credits="{4}"
-authors="{5}"
-description="{6}"
-
-[[dependencies.{0}]]
-modId="forge"
-mandatory=true
-versionRange="[28,)"
-ordering="NONE"
-side="BOTH"
-
-[[dependencies.{0}]]
-modId="minecraft"
-mandatory=true
-versionRange="[1.14.4]"
-ordering="NONE"
-side="BOTH"
-""".format(self.modid, self.version, self.name, self.url, self.credits, self.authors, self.description)
-        with open(os.path.join(self.paths["Ressources"], "META-INF", "mods.toml"), "w") as f:
-            f.write(toml)
-
-    def edit_build(self):
-        build = """
 buildscript {
     repositories {
         maven { url = 'https://files.minecraftforge.net/maven' }
@@ -149,9 +14,9 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = 'VERSION'
-group = 'fr.pymodder.MODID' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = 'NOM'
+version = '1.0.0'
+group = 'fr.pymodder.projecttest' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = 'ProjectTest'
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
@@ -282,16 +147,4 @@ publishing {
             url "file:///${project.projectDir}/mcmodsrepo"
         }
     }
-}""".replace("VERSION", self.version).replace("MODID", self.modid).replace("NOM", self.name)
-        with open(os.path.join(self.paths["Folder"], "build.gradle"), "w") as f:
-            f.write(build)
-
-    @classmethod
-    def new(cls):
-        name = "Untitled"
-        while name in os.listdir(os.path.join(os.path.dirname(__file__), "..", "..", "Mods")):
-            if name == "Untitled":
-                name = name + "-1"
-            else:
-                name = name.split("-")[0] + "-" + str(int(name.split("-")[1])+1)
-        return Project(name)
+}
