@@ -124,3 +124,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+
+Mods/ProjectTest/mc/assets/
+Mods/ProjectTest/mc/natives/
+Mods/ProjectTest/mc/libraries/
+Mods/ProjectTest/mc/logs/

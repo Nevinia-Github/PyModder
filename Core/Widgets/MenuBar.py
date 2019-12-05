@@ -27,7 +27,7 @@ class MenuBar(Frame):
         self.open_btn = Button(self, image=self.icons["Open"])
         self.save_btn = Button(self, image=self.icons["Save"])
         self.new_btn = Button(self, image=self.icons["New"])
-        self.launch_btn = Button(self, image=self.icons["Launch"])
+        self.launch_btn = Button(self, image=self.icons["Launch"], command=self.launch)
         self.build_btn = Button(self, image=self.icons["Build"], command=self.build)
 
         ToolTip(self.param_btn, main.lang.get_translate("parameters_tooltip", "Parameters"))
@@ -58,6 +58,9 @@ class MenuBar(Frame):
         self.build_btn.grid(row=0, column=5, sticky="NSEW", padx=5, pady=5)
         self.separators["exe_param"].grid(row=0, column=6, sticky="NS")
         self.param_btn.grid(row=0, column=7, sticky="NSEW", padx=5, pady=5)
+
+    def launch(self):
+        self.main.launcher.launch()
 
     def build(self):
         showinfo("Compilation à venir", "La compilation va être effectuée.\nElle peut prendre quelques minutes et "

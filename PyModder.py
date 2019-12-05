@@ -3,6 +3,7 @@ from tkinter.ttk import Separator
 from Core.Utils.Config import Config
 from Core.Utils.Project import Project
 from Core.Utils.Lang import Lang
+from Core.Launcher.Launcher import Launcher
 from Core.Widgets.MenuBar import MenuBar
 from Core.Widgets.ElementsFrame import ElementsFrame
 from Core.Widgets.PropertiesFrame import PropertiesFrame
@@ -29,6 +30,7 @@ class PyModder:
         self.screen.state("zoomed")
 
         self.project = self.load_project(self.conf.get("last_project", ""))
+        self.launcher = Launcher(self)
         self.conf.set("last_project", self.project.name)
         self.conf.save()
 
