@@ -8,7 +8,7 @@ default_libs_server = "https://libraries.minecraft.net/"
 class Library:
     def __init__(self, name, path, url, native, hash_):
         self.name = name
-        self.path = path
+        self.path = path[:-1]
         self.url = url
         self.required = True
         self.hash = hash_
@@ -37,7 +37,7 @@ class Library:
             if natives is not None:
                 native_id = natives.get('windows')
 
-            path = os.path.join(launcher.libs_dir, name_to_path(json.get("path"), native_id))
+            path = os.path.join(launcher.libs_dir, json.get("path"))
             url = json.get("url")
             if not url:
                 url = default_libs_server + path
@@ -56,7 +56,7 @@ class Library:
                 native_id = native_id.replace("${arch}", "64")
                 job = classif.get(native_id)
 
-                path = os.path.join(launcher.libs_dir, name_to_path(job.get("path"), native_id))
+                path = os.path.join(launcher.libs_dir, job.get("path"))
                 url = job.get("url")
                 if not url:
                     url = default_libs_server + path
@@ -68,7 +68,7 @@ class Library:
                 arti = downloads.get("artifact")
                 if arti:
                     json = arti
-                    path = os.path.join(launcher.libs_dir, name_to_path(json.get("path"), ""))
+                    path = os.path.join(launcher.libs_dir, json.get("path"))
                     url = json.get("url")
                     if not url:
                         url = default_libs_server + path
@@ -82,7 +82,7 @@ class Library:
         arti = downloads.get("artifact")
         if arti:
             json = arti
-            path = os.path.join(launcher.libs_dir, name_to_path(json.get("path"), ""))
+            path = os.path.join(launcher.libs_dir, json.get("path"), "")
             url = json.get("url")
             if not url:
                 url = default_libs_server + path
@@ -92,26 +92,3 @@ class Library:
             return Library(name, path, url, True if "" else False, json.get("sha1"))
 
         return None
-
-
-def name_to_path(name, native):
-    try:
-        temp = name.split(":")
-        front = temp[0].replace(".", "/")
-        back = ""
-
-        for i in range(1, len(temp)):
-            if i == len(temp) - 1:
-                back += temp[i]
-            else:
-                back += temp[i] + ":"
-
-        libpath = front + "/" + back.replace(":", "/") + "/" + (back.replace(":", "-"))
-        if native:
-            libpath += "-"+native+".jar"
-        else:
-            libpath += ".jar"
-        return libpath
-    except Exception as e:
-        print(e)
-        return ""
