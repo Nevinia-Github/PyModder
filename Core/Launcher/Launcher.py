@@ -114,8 +114,7 @@ class Launcher:
                 except:
                     pass
 
-        if mc.returncode:
-            print(f"Client returned {mc.returncode}!")
+        os.system("subst H: /D")
 
     def extract_natives(self):
         for item in self.version.libraries:
@@ -143,7 +142,7 @@ class Launcher:
         lib_args = []
 
         for i in self.version.libraries:
-            if not i.native:
+            if not i.native and i.path.endswith(".jar"):
                 lib_args.append(e(i.path))
 
         lib_args.append(e(os.path.join(self.version_dir, self.version.jar, self.version.jar+".jar")))
@@ -189,8 +188,7 @@ class Launcher:
             args.append(arg_str(self.version.minecraftArguments, gamedict))
 
         for i in range(len(args)):
-            args[i] = str(args[i]).replace(self.mc_dir, "H:")
-
+            args[i] = str(args[i]).replace(self.mc_dir, "H:").replace("\\", "/")
         return " ".join(args)
 
 

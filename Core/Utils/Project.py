@@ -93,9 +93,25 @@ class Project:
         shutil.rmtree(os.path.join(self.paths["Java"], "com"))
         os.makedirs(os.path.join(self.paths["Java"], "fr", "pymodder", self.modid))
         self.paths["Main"] = os.path.join(self.paths["Java"], "fr", "pymodder", self.modid)
+        self.create_mc()
         self.edit_toml()
         self.edit_build()
         self.edit_main()
+
+    def create_mc(self):
+        os.makedirs(os.path.join(self.paths["Folder"], "mc"))
+        os.makedirs(os.path.join(self.paths["Folder"], "mc", "assets"))
+        os.makedirs(os.path.join(self.paths["Folder"], "mc", "assets", "objects"))
+        os.makedirs(os.path.join(self.paths["Folder"], "mc", "assets", "indexes"))
+        os.makedirs(os.path.join(self.paths["Folder"], "mc", "assets", "virtual"))
+        os.makedirs(os.path.join(self.paths["Folder"], "mc", "assets", "virtual", "legacy"))
+        os.makedirs(os.path.join(self.paths["Folder"], "mc", "libraries"))
+        os.makedirs(os.path.join(self.paths["Folder"], "mc", "natives"))
+        os.makedirs(os.path.join(self.paths["Folder"], "mc", "resources"))
+        os.makedirs(os.path.join(self.paths["Folder"], "mc", "versions"))
+        r = requests.get("http://163.172.232.196/versions-1.14.4.zip")
+        z = zipfile.ZipFile(io.BytesIO(r.content))
+        z.extractall(os.path.join(self.paths["Folder"], "mc", "versions"))
 
     def edit_main(self):
         main = MainClass.MainClass(self)

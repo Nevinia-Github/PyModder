@@ -3,6 +3,7 @@ from tkinter import PhotoImage, VERTICAL
 from tkinter.messagebox import showinfo, showerror
 from Core.Widgets.Tooltip import ToolTip
 from Core.Windows.ParametersWindow import ParametersWindow
+from Core.Launcher.Launcher import Launcher
 
 import os
 import subprocess
@@ -26,7 +27,7 @@ class MenuBar(Frame):
         self.param_btn = Button(self, image=self.icons["Parameters"], command=self.open_param)
         self.open_btn = Button(self, image=self.icons["Open"])
         self.save_btn = Button(self, image=self.icons["Save"])
-        self.new_btn = Button(self, image=self.icons["New"])
+        self.new_btn = Button(self, image=self.icons["New"], command=self.new)
         self.launch_btn = Button(self, image=self.icons["Launch"], command=self.launch)
         self.build_btn = Button(self, image=self.icons["Build"], command=self.build)
 
@@ -58,6 +59,13 @@ class MenuBar(Frame):
         self.build_btn.grid(row=0, column=5, sticky="NSEW", padx=5, pady=5)
         self.separators["exe_param"].grid(row=0, column=6, sticky="NS")
         self.param_btn.grid(row=0, column=7, sticky="NSEW", padx=5, pady=5)
+
+    def new(self):
+        print("oui")
+        self.main.project = self.main.load_project("")
+        self.main.launcher = Launcher(self.main)
+        self.main.conf.set("last_project", self.main.project.name)
+        self.main.conf.save()
 
     def launch(self):
         self.main.launcher.launch()
