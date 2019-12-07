@@ -9,7 +9,8 @@ from Core.JavaClass import MainClass
 
 
 class Project:
-    def __init__(self, name):
+    def __init__(self, main, name):
+        self.main = main
         self.paths = {
             "Folder": os.path.join(os.path.dirname(__file__), "..", "..", "Mods", name)
         }
@@ -25,6 +26,7 @@ class Project:
             self.credits = "PyModder, MFF anf Forge guys"
             self.authors = "Author"
             self.description = "Coming Soon"
+            self.main.logger.info("Creating Project folder.")
             self.create_folder()
         else:
             with open(os.path.join(self.paths["Folder"], "project.json"), "r") as f:
@@ -36,6 +38,8 @@ class Project:
             self.authors = datas["authors"]
             self.description = datas["description"]
             self.paths["Main"] = os.path.join(self.paths["Java"], "fr", "pymodder", self.modid)
+
+        self.main.logger.info("Project loaded.")
 
         self.old_modid = self.modid
 
@@ -73,6 +77,8 @@ class Project:
         self.edit_build()
         self.edit_main()
 
+        self.main.logger.info("Project saved.")
+
     def create_folder(self):
         os.makedirs(self.paths["Folder"])
         datas = {
@@ -93,10 +99,12 @@ class Project:
         shutil.rmtree(os.path.join(self.paths["Java"], "com"))
         os.makedirs(os.path.join(self.paths["Java"], "fr", "pymodder", self.modid))
         self.paths["Main"] = os.path.join(self.paths["Java"], "fr", "pymodder", self.modid)
+        self.main.logger.info("Forge downloaded.")
         self.create_mc()
         self.edit_toml()
         self.edit_build()
         self.edit_main()
+        self.main.logger.info("Project folder created.")
 
     def create_mc(self):
         os.makedirs(os.path.join(self.paths["Folder"], "mc"))
@@ -112,6 +120,7 @@ class Project:
         r = requests.get("http://163.172.232.196/versions-1.14.4.zip")
         z = zipfile.ZipFile(io.BytesIO(r.content))
         z.extractall(os.path.join(self.paths["Folder"], "mc", "versions"))
+        self.main.logger.info("Minecraft downloaded.")
 
     def edit_main(self):
         main = MainClass.MainClass(self)
@@ -303,11 +312,11 @@ publishing {
             f.write(build)
 
     @classmethod
-    def new(cls):
+    def new(cls, main):
         name = "Untitled"
         while name in os.listdir(os.path.join(os.path.dirname(__file__), "..", "..", "Mods")):
             if name == "Untitled":
                 name = name + "-1"
             else:
                 name = name.split("-")[0] + "-" + str(int(name.split("-")[1])+1)
-        return Project(name)
+        return Project(main, name)

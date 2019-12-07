@@ -61,7 +61,6 @@ class MenuBar(Frame):
         self.param_btn.grid(row=0, column=7, sticky="NSEW", padx=5, pady=5)
 
     def new(self):
-        print("oui")
         self.main.project = self.main.load_project("")
         self.main.launcher = Launcher(self.main)
         self.main.conf.set("last_project", self.main.project.name)

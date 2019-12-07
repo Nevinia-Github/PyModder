@@ -2,7 +2,7 @@ import os
 import shutil
 from Core.Launcher.MCVersion import MCVersionsList
 from Core.Launcher.Download import Download
-import string
+from tkinter.messagebox import showinfo
 import re
 import zipfile
 import subprocess
@@ -74,7 +74,7 @@ class Launcher:
         self.objects_dir = m(os.path.join(self.assets_dir, "objects"))
         self.legacy_dir = m(os.path.join(self.assets_dir, "virtual", "legacy"))
 
-        print("Initialize dirs in", self.mc_dir)
+        self.main.logger.info("Initialize Minecraft in %s", self.mc_dir)
 
         self.java_dir = shutil.which("javaw")
         self.mem = 2048
@@ -85,24 +85,28 @@ class Launcher:
         self.version = MCVersionsList(self).get("1.14.4-forge-28.1.0")
 
         download = Download(self, self.version, self.download_event)
+        showinfo("Téléchargement de Minecraft", "Le téléchargement de Minecraft va être lancer.\nCelui ci peut prendre "
+                                                "un certain temps.\nVeuillez patientez...")
         download.download_all(True)
 
         self.start_profile = self.version
         self.launcher_name = "PyModder"
 
-    @staticmethod
-    def download_event(kind, name, max_, current):
-        print(kind, name, max_, current)
+    def download_event(self, kind, name, max_, current):
+        if name == "":
+            self.main.logger.info("Download %s (%s / %s)", kind, current, max_)
+        else:
+            self.main.logger.info("Download %s (%s / %s) : %s", kind, current, max_, name)
 
     def launch(self):
         self.clean_natives()
         self.extract_natives()
         args = self.create_args()
-        print(args)
+        self.main.logger.info("Launch Minecraft.")
+        self.main.logger.debug("Args : %s", args)
         os.system("subst H: "+self.mc_dir)
         mc = subprocess.Popen("javaw "+args, stdout=subprocess.PIPE,
                               stderr=subprocess.STDOUT, cwd=self.mc_dir, shell=True)
-        print("LAUNCHED !")
         # write output
         with mc.stdout as gameLog:
             while True:
@@ -110,11 +114,12 @@ class Launcher:
                     line = gameLog.readline()
                     if not line:
                         break
-                    print(line.decode(sys.getdefaultencoding()), end="")
+                    self.main.logger.info(line.decode(sys.getdefaultencoding()).replace("\n", ""))
                 except:
                     pass
 
         os.system("subst H: /D")
+        self.main.logger.info("Minecraft closed.")
 
     def extract_natives(self):
         for item in self.version.libraries:
