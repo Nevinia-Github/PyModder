@@ -4,5 +4,19 @@
     "url": "",
     "credits": "PyModder, MFF anf Forge guys",
     "authors": "LavaPower",
-    "description": "Ceci est un mod de test avec PyModder."
+    "description": "Ceci est un mod de test avec PyModder.",
+    "objects": {
+        "blocks": [
+            {
+                "name": "bloc",
+                "registry_name": "bloc",
+                "material": "ROCK",
+                "hardness": "25F",
+                "resistance": "600F",
+                "texture": "",
+                "type": "SimpleBlock",
+                "script": ""
+            }
+        ]
+    }
 }

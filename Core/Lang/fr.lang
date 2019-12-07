@@ -17,6 +17,7 @@ properties_resistance: Résistance :
 properties_texture: Texture :
 properties_script: Script :
 properties_type_: Type :
+properties_validate: Valider
 
 title_param: Paramètres
 

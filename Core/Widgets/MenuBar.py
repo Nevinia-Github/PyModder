@@ -26,7 +26,7 @@ class MenuBar(Frame):
 
         self.param_btn = Button(self, image=self.icons["Parameters"], command=self.open_param)
         self.open_btn = Button(self, image=self.icons["Open"])
-        self.save_btn = Button(self, image=self.icons["Save"])
+        self.save_btn = Button(self, image=self.icons["Save"], command=self.save)
         self.new_btn = Button(self, image=self.icons["New"], command=self.new)
         self.launch_btn = Button(self, image=self.icons["Launch"], command=self.launch)
         self.build_btn = Button(self, image=self.icons["Build"], command=self.build)
@@ -66,6 +66,9 @@ class MenuBar(Frame):
         self.main.conf.set("last_project", self.main.project.name)
         self.main.conf.save()
 
+    def save(self):
+        self.main.project.save()
+
     def launch(self):
         self.main.launcher.launch()
 
@@ -79,12 +82,17 @@ class MenuBar(Frame):
                             self.main.project.name + "-" + self.main.project.version + ".jar")
         shutil.copy(path, os.path.join(self.main.project.paths["Folder"],
                                        self.main.project.name + "-" + self.main.project.version + ".jar"))
-        if sub.stderr != '':
+        error = False
+        for i in sub.stdout.decode("utf8").split("\n"):
+            if "FAILED" in i:
+                error = True
+            self.main.logger.debug(i)
+        if not error:
             showinfo("Compilation finie",
                      "Compilation finie.\nVotre fichier est disponible dans le dossier du mods.\nSon nom est " +
                      self.main.project.name + "-" + self.main.project.version + ".jar")
         else:
-            showerror("Compilation finie", "La compilation a échoué.\nErreur : "+sub.stderr)
+            showerror("Compilation finie", "La compilation a échoué.\nRegardez les logs.")
 
     def open_param(self):
         ParametersWindow(self.main)

@@ -39,6 +39,10 @@ class PyModder:
         self.lang = Lang(os.path.join(self.paths["Lang"], self.conf.get("lang", "en")+".lang"))
         self.screen.state("zoomed")
 
+        self.menu = MenuBar(self)
+        self.elements = ElementsFrame(self)
+        self.properties = PropertiesFrame(self)
+
         self.project = self.load_project(self.conf.get("last_project", ""))
         self.launcher = Launcher(self)
         self.conf.set("last_project", self.project.name)
@@ -47,10 +51,6 @@ class PyModder:
         self.screen.columnconfigure(1, weight=1)
         self.screen.columnconfigure(3, weight=3)
         self.screen.rowconfigure(3, weight=1)
-
-        self.menu = MenuBar(self)
-        self.elements = ElementsFrame(self)
-        self.properties = PropertiesFrame(self)
 
         Separator(self.screen, orient=VERTICAL).grid(row=0, column=0, sticky="NS")
         Separator(self.screen, orient=HORIZONTAL).grid(row=0, column=0, columnspan=5, sticky="EW")
@@ -67,6 +67,7 @@ class PyModder:
         self.screen.mainloop()
 
     def close(self):
+        self.project.save()
         self.logger.info("PyModder closed successfully.")
         self.screen.destroy()
 

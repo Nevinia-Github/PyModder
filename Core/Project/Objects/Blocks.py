@@ -17,11 +17,13 @@ class SimpleBlock:
         return self.__dict__.items()
 
     def to_json(self):
-        return {"registry_name": self.registry_name, "material": self.material, "hardness": self.hardness,
-                "resistance": self.resistance, "texture": self.texture, "script": self.script}
+        return {"name": self.name, "registry_name": self.registry_name, "material": self.material,
+                "hardness": self.hardness, "resistance": self.resistance, "texture": self.texture, "type": self.type_,
+                "script": self.script}
 
     @classmethod
-    def from_json(cls, name, datas):
+    def from_json(cls, datas):
+        name = datas["name"]
         registry_name = datas["registry_name"]
         material = datas["material"]
         hardness = datas["hardness"]

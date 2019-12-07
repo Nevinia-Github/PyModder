@@ -6,6 +6,11 @@ class MainClass:
         self.project = project
 
     def save(self):
+        replaces = {
+            "NAME": self.project.name,
+            "PACKAGE": "fr.pymodder.MODID",
+            "MODID": self.project.modid,
+        }
         file = """
 package PACKAGE;
 
@@ -41,6 +46,8 @@ public class NAME
     private void serverSetup(final FMLDedicatedServerSetupEvent event) {
         LOGGER.info("NAME server setup completed.");
     }
-}""".replace("NAME", self.project.name).replace("PACKAGE", "fr.pymodder.MODID").replace("MODID", self.project.modid)
+}"""
+        for k, v in replaces.items():
+            file = file.replace(k, v)
         with open(os.path.join(self.project.paths["Main"], self.project.name+".java"), "w") as f:
             f.write(file)

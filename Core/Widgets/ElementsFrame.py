@@ -25,6 +25,8 @@ class ElementsFrame(Frame):
         add_element.grid(row=2, column=0, sticky="NESW", pady=5)
         Separator(self, orient=HORIZONTAL).grid(row=3, column=0, sticky="EW")
 
+        self.elements_widgets = {}
+
         self.current_row = 4
 
     def add_elements(self):
@@ -32,9 +34,20 @@ class ElementsFrame(Frame):
 
     def validate_add(self, name, type_):
         object_ = self.main.project.add_object(type_, name)
-        Button(self, text=object_.name + " - " + object_.type_, style="my.TButton",
-               command=lambda obj=object_: self.show_element(obj)).grid(row=self.current_row, column=0,
-                                                                        sticky="EW", pady=5)
+        self.add_object(object_)
+
+    def reload_object(self, name, obj):
+        if name in self.elements_widgets.keys():
+            btn = self.elements_widgets[name]
+            del self.elements_widgets[name]
+            btn.config(text=obj.name + " - " + obj.type_)
+            self.elements_widgets[obj.name] = btn
+
+    def add_object(self, obj):
+        btn = Button(self, text=obj.name + " - " + obj.type_, style="my.TButton",
+                     command=lambda obj_=obj: self.show_element(obj_))
+        btn.grid(row=self.current_row, column=0, sticky="EW", pady=5)
+        self.elements_widgets[obj.name] = btn
         self.current_row += 1
 
     def show_element(self, obj):

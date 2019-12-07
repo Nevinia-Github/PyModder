@@ -5,7 +5,7 @@ import io
 import zipfile
 import shutil
 
-from Core.Project.JavaClass import MainClass
+from Core.Project.JavaClass import MainClass, BlocksClass
 from Core.Project.Objects import Blocks
 
 
@@ -42,9 +42,14 @@ class Project:
             self.credits = datas["credits"]
             self.authors = datas["authors"]
             self.description = datas["description"]
+            self.objects["blocks"] += \
+                [Blocks.SimpleBlock.from_json(i) for i in datas["objects"]["blocks"] if i["type"] == "SimpleBlock"]
             self.paths["Main"] = os.path.join(self.paths["Java"], "fr", "pymodder", self.modid)
 
         self.main.logger.info("Project loaded.")
+
+        for i in self.objects["blocks"]:
+            self.main.elements.add_object(i)
 
         self.old_modid = self.modid
 
@@ -55,7 +60,10 @@ class Project:
             "url": self.url,
             "credits": self.credits,
             "authors": self.authors,
-            "description": self.description
+            "description": self.description,
+            "objects": {
+                "blocks": [i.to_json() for i in self.objects["blocks"]]
+            }
         }
         with open(os.path.join(self.paths["Folder"], "project.json"), "w") as f:
             json.dump(datas, f, indent=4)
@@ -97,11 +105,15 @@ class Project:
 
     def edit_objects(self):
         if len(self.objects["blocks"]):
+            blocks = BlocksClass.BlocksClass(self)
+            blocks.save()
             for i in self.objects["blocks"]:
-                print(i)
+                if i.type_ == "SimpleBlock":
+                    block = BlocksClass.SimpleBlocksClass(self, i)
+                    block.save()
 
     def create_folder(self):
-        os.makedirs(self.paths["Folder"])
+        os.makedirs(os.path.join(self.paths["Folder"], "textures"))
         datas = {
             "version": self.version,
             "modid": self.modid,
