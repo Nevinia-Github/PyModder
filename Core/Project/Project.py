@@ -5,7 +5,8 @@ import io
 import zipfile
 import shutil
 
-from Core.JavaClass import MainClass
+from Core.Project.JavaClass import MainClass
+from Core.Project.Objects import Blocks
 
 
 class Project:
@@ -18,6 +19,10 @@ class Project:
         self.paths["Ressources"] = os.path.join(self.paths["Folder"], "src", "main", "resources")
         self.name = name
         self.old_name = name
+
+        self.objects = {
+            "blocks": []
+        }
 
         if not os.path.exists(self.paths["Folder"]):
             self.version = "1.0.0"
@@ -76,8 +81,24 @@ class Project:
         self.edit_toml()
         self.edit_build()
         self.edit_main()
+        self.edit_objects()
 
         self.main.logger.info("Project saved.")
+
+    def add_object(self, type_, name):
+        if type_ == "SimpleBlock":
+            object_ = Blocks.SimpleBlock(name)
+            type_ = "blocks"
+        else:
+            raise ValueError("Wrong Type : "+type_)
+        self.objects[type_].append(object_)
+        self.edit_objects()
+        return object_
+
+    def edit_objects(self):
+        if len(self.objects["blocks"]):
+            for i in self.objects["blocks"]:
+                print(i)
 
     def create_folder(self):
         os.makedirs(self.paths["Folder"])

@@ -9,6 +9,14 @@ elements_title: Elements
 elements_add: Ajouter Element
 
 properties_title: Propriétés
+properties_name: Nom :
+properties_registry_name: Nom d'enregistrement :
+properties_material: Matériel :
+properties_hardness: Dureté :
+properties_resistance: Résistance :
+properties_texture: Texture :
+properties_script: Script :
+properties_type_: Type :
 
 title_param: Paramètres
 

@@ -1,7 +1,7 @@
 from tkinter import Tk, HORIZONTAL, VERTICAL
 from tkinter.ttk import Separator
 from Core.Utils.Config import Config
-from Core.Utils.Project import Project
+from Core.Project.Project import Project
 from Core.Utils.Lang import Lang
 from Core.Launcher.Launcher import Launcher
 from Core.Widgets.MenuBar import MenuBar
