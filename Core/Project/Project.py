@@ -6,6 +6,7 @@ import zipfile
 import shutil
 
 from Core.Project.JavaClass import MainClass, BlocksClass
+from Core.Project.Jsons import BlockJson, BlockStatesJson, LangJson
 from Core.Project.Objects import Blocks
 
 
@@ -27,6 +28,7 @@ class Project:
         if not os.path.exists(self.paths["Folder"]):
             self.version = "1.0.0"
             self.modid = name.strip().lower()
+            self.paths["Assets"] = os.path.join(self.paths["Ressources"], "assets", self.modid)
             self.url = ""
             self.credits = "PyModder, MFF anf Forge guys"
             self.authors = "Author"
@@ -45,6 +47,7 @@ class Project:
             self.objects["blocks"] += \
                 [Blocks.SimpleBlock.from_json(i) for i in datas["objects"]["blocks"] if i["type"] == "SimpleBlock"]
             self.paths["Main"] = os.path.join(self.paths["Java"], "fr", "pymodder", self.modid)
+            self.paths["Assets"] = os.path.join(self.paths["Ressources"], "assets", self.modid)
 
         self.main.logger.info("Project loaded.")
 
@@ -75,6 +78,7 @@ class Project:
             self.paths["Java"] = os.path.join(self.paths["Folder"], "src", "main", "java")
             self.paths["Ressources"] = os.path.join(self.paths["Folder"], "src", "main", "resources")
             self.paths["Main"] = os.path.join(self.paths["Java"], "fr", "pymodder", self.modid)
+            self.paths["Assets"] = os.path.join(self.paths["Ressources"], "assets", self.modid)
             os.rename(os.path.join(self.paths["Main"], self.old_name+".java"),
                       os.path.join(self.paths["Main"], self.name+".java"))
             self.old_name = self.name
@@ -104,13 +108,19 @@ class Project:
         return object_
 
     def edit_objects(self):
+        LangJson.EnJson(self).save()
         if len(self.objects["blocks"]):
             blocks = BlocksClass.BlocksClass(self)
             blocks.save()
+            os.makedirs(os.path.join(self.paths["Assets"], "textures", "block"), exist_ok=True)
             for i in self.objects["blocks"]:
                 if i.type_ == "SimpleBlock":
-                    block = BlocksClass.SimpleBlocksClass(self, i)
-                    block.save()
+                    BlocksClass.SimpleBlocksClass(self, i).save()
+                    BlockStatesJson.BlockStatesJson(self, i).save()
+                    BlockJson.SimpleBlockJson(self, i).save()
+                    BlockJson.BlockItemJson(self, i).save()
+                    shutil.copyfile(os.path.join(self.paths["Folder"], "textures", i.texture+".png"),
+                                    os.path.join(self.paths["Assets"], "textures", "block", i.texture+".png"))
 
     def create_folder(self):
         os.makedirs(os.path.join(self.paths["Folder"], "textures"))
@@ -132,6 +142,8 @@ class Project:
         shutil.rmtree(os.path.join(self.paths["Java"], "com"))
         os.makedirs(os.path.join(self.paths["Java"], "fr", "pymodder", self.modid))
         self.paths["Main"] = os.path.join(self.paths["Java"], "fr", "pymodder", self.modid)
+        self.paths["Assets"] = os.path.join(self.paths["Ressources"], "assets", self.modid)
+        os.makedirs(self.paths["Assets"])
         self.main.logger.info("Forge downloaded.")
         self.create_mc()
         self.edit_toml()

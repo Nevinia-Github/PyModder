@@ -8,12 +8,12 @@
     "objects": {
         "blocks": [
             {
-                "name": "bloc",
+                "name": "Bloc",
                 "registry_name": "bloc",
                 "material": "ROCK",
                 "hardness": "25F",
                 "resistance": "600F",
-                "texture": "",
+                "texture": "bloc",
                 "type": "SimpleBlock",
                 "script": ""
             }
