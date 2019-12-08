@@ -15,20 +15,20 @@ import net.minecraftforge.registries.ObjectHolder;
 public class ProjectTestBlocks
 {
     @ObjectHolder(ProjectTest.MOD_ID + ":bloc")
-    public static final Block BLOC = null;
+    public static final Block PROJECTBLOC = null;
 
 
     @SubscribeEvent
     public static void registerBlock(final RegistryEvent.Register<Block> event)
     {
-        event.getRegistry().register(new Bloc());
+        event.getRegistry().register(new Projectbloc());
 
     }
 
     @SubscribeEvent
     public static void registerItem(final RegistryEvent.Register<Item> event)
     {
-        event.getRegistry().register(new BlockItem(BLOC, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS)).setRegistryName(BLOC.getRegistryName()));
+        event.getRegistry().register(new BlockItem(PROJECTBLOC, new Item.Properties().group(ProjectTest.PROJECTTAB_GROUP)).setRegistryName(PROJECTBLOC.getRegistryName()));
 
     }
 }

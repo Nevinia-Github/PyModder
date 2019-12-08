@@ -1,4 +1,5 @@
 import os
+from Core.Utils.Constants import ITEMGROUP
 
 
 class SimpleBlocksClass:
@@ -51,6 +52,7 @@ class BlocksClass:
                 "REGISTRY_NAME": i.registry_name,
                 "NAMEVAR": i.name.upper().replace(" ", "_"),
                 "NAMECLASS": i.name.title().replace(" ", "_"),
+                "ITEMGROUP": "ItemGroup." + i.itemgroup if i.itemgroup in ITEMGROUP else "NAME." + i.itemgroup,
                 "NAME": self.project.name
             }
             declare_blocks += '    @ObjectHolder(NAME.MOD_ID + ":REGISTRY_NAME")\n'\
@@ -58,7 +60,7 @@ class BlocksClass:
             declare_blocks += '    public static final Block NAMEVAR = null;\n'
             register_blocks += "        event.getRegistry().register(new NAMECLASS());\n"
             register_items += "        event.getRegistry().register(new BlockItem(NAMEVAR, new Item.Properties()" \
-                              ".group(ItemGroup.BUILDING_BLOCKS)).setRegistryName(NAMEVAR.getRegistryName()));\n"
+                              ".group(ITEMGROUP)).setRegistryName(NAMEVAR.getRegistryName()));\n"
             for k, v in replaces.items():
                 declare_blocks = declare_blocks.replace(k, v)
                 register_blocks = register_blocks.replace(k, v)

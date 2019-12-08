@@ -7,7 +7,7 @@ import shutil
 
 from Core.Project.JavaClass import MainClass, BlocksClass
 from Core.Project.Jsons import BlockJson, BlockStatesJson, LangJson
-from Core.Project.Objects import Blocks
+from Core.Project.Objects import Blocks, ItemGroup
 
 
 class Project:
@@ -22,7 +22,8 @@ class Project:
         self.old_name = name
 
         self.objects = {
-            "blocks": []
+            "blocks": [],
+            "itemgroups": []
         }
 
         if not os.path.exists(self.paths["Folder"]):
@@ -46,12 +47,14 @@ class Project:
             self.description = datas["description"]
             self.objects["blocks"] += \
                 [Blocks.SimpleBlock.from_json(i) for i in datas["objects"]["blocks"] if i["type"] == "SimpleBlock"]
+            self.objects["itemgroups"] += \
+                [ItemGroup.ItemGroup.from_json(i) for i in datas["objects"]["itemgroups"] if i["type"] == "ItemGroup"]
             self.paths["Main"] = os.path.join(self.paths["Java"], "fr", "pymodder", self.modid)
             self.paths["Assets"] = os.path.join(self.paths["Ressources"], "assets", self.modid)
 
         self.main.logger.info("Project loaded.")
 
-        for i in self.objects["blocks"]:
+        for i in self.objects["blocks"] + self.objects["itemgroups"]:
             self.main.elements.add_object(i)
 
         self.old_modid = self.modid
@@ -65,7 +68,8 @@ class Project:
             "authors": self.authors,
             "description": self.description,
             "objects": {
-                "blocks": [i.to_json() for i in self.objects["blocks"]]
+                "blocks": [i.to_json() for i in self.objects["blocks"]],
+                "itemgroups": [i.to_json() for i in self.objects["itemgroups"]]
             }
         }
         with open(os.path.join(self.paths["Folder"], "project.json"), "w") as f:
@@ -101,6 +105,9 @@ class Project:
         if type_ == "SimpleBlock":
             object_ = Blocks.SimpleBlock(name)
             type_ = "blocks"
+        elif type_ == "ItemGroup":
+            object_ = ItemGroup.ItemGroup(name)
+            type_ = "itemgroups"
         else:
             raise ValueError("Wrong Type : "+type_)
         self.objects[type_].append(object_)
@@ -121,6 +128,10 @@ class Project:
                     BlockJson.BlockItemJson(self, i).save()
                     shutil.copyfile(os.path.join(self.paths["Folder"], "textures", i.texture+".png"),
                                     os.path.join(self.paths["Assets"], "textures", "block", i.texture+".png"))
+
+    def edit_main(self):
+        main = MainClass.MainClass(self)
+        main.save()
 
     def create_folder(self):
         os.makedirs(os.path.join(self.paths["Folder"], "textures"))
@@ -166,10 +177,6 @@ class Project:
         z = zipfile.ZipFile(io.BytesIO(r.content))
         z.extractall(os.path.join(self.paths["Folder"], "mc", "versions"))
         self.main.logger.info("Minecraft downloaded.")
-
-    def edit_main(self):
-        main = MainClass.MainClass(self)
-        main.save()
 
     def edit_toml(self):
         toml = """

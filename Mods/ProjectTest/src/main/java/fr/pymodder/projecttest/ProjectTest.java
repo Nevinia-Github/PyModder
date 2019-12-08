@@ -6,6 +6,11 @@ import net.minecraftforge.fml.event.lifecycle.*;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import fr.pymodder.projecttest.blocks.ProjectTestBlocks;
 
 import java.util.stream.Collectors;
 
@@ -14,6 +19,20 @@ public class ProjectTest
 {
     public static final String MOD_ID = "projecttest";
     public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
+
+    public static final ItemGroup PROJECTTAB_GROUP = new ItemGroup("projecttab")
+    {
+        @OnlyIn(Dist.CLIENT)
+        @Override
+        public ItemStack createIcon()
+        {
+            return new ItemStack(ProjectTestBlocks.PROJECTBLOC);
+        }
+        @Override        public boolean hasSearchBar()
+        {
+            return true;        }
+    };
+
     
     public ProjectTest()
     {

@@ -1,3 +1,4 @@
 {
-    "block.projecttest.bloc": "Bloc"
+    "block.projecttest.bloc": "ProjectBloc",
+    "itemGroup.projecttab": "ProjectTab"
 }

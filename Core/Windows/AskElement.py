@@ -1,6 +1,8 @@
 from tkinter import Toplevel
 from tkinter.ttk import Label, Entry, Button, Combobox
 
+from Core.Utils.Constants import ELEMENTS
+
 
 class AskElement(Toplevel):
     def __init__(self, window, callback):
@@ -9,7 +11,7 @@ class AskElement(Toplevel):
         self.callback = callback
 
         self.clabel = Label(self, text="Entrez le type de l'élément :", font=("Arial", "14"))
-        self.combo = Combobox(self, values=["SimpleBlock"])
+        self.combo = Combobox(self, values=ELEMENTS)
         self.elabel = Label(self, text="Entrez le nom de l'élément :", font=("Arial", "14"))
         self.entry = Entry(self)
         self.button = Button(self, text="Valider", command=self.valide)
@@ -26,7 +28,7 @@ class AskElement(Toplevel):
 
     def valide(self):
         name = self.entry.get()
-        type_ = ["SimpleBlock"][self.combo.current()]
+        type_ = ELEMENTS[self.combo.current()]
         if name != "":
             self.callback(name, type_)
             self.destroy()

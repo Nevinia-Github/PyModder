@@ -1,7 +1,7 @@
-from tkinter.ttk import Frame, Separator, Label, Entry, Combobox, Button, Style
-from tkinter import HORIZONTAL
+from tkinter.ttk import Frame, Separator, Label, Entry, Combobox, Button, Style, Checkbutton
+from tkinter import HORIZONTAL, IntVar
 
-from Core.Utils.Constants import BLOCK_MATERIALS
+from Core.Utils.Constants import BLOCK_MATERIALS, ITEMGROUP, ICON_BLOCKS
 
 
 class PropertiesFrame(Frame):
@@ -23,7 +23,10 @@ class PropertiesFrame(Frame):
     def show_properties(self, object_):
         for i in self.properties_widgets.values():
             for widget in i:
-                widget.grid_forget()
+                if isinstance(widget, list):
+                    widget[0].grid_forget()
+                else:
+                    widget.grid_forget()
         self.current_obj = object_
         nb = 0
         for k, v in object_.properties():
@@ -37,10 +40,27 @@ class PropertiesFrame(Frame):
                 other = Combobox(self, values=BLOCK_MATERIALS)
                 other.current(BLOCK_MATERIALS.index(v))
                 other.grid(row=2+nb, column=1, sticky="EW", padx=50, pady=10)
+            elif k == "itemgroup":
+                list_ = [i.name.upper().replace(" ", "_")+"_GROUP" for i in self.main.project.objects["itemgroups"]] + \
+                        ITEMGROUP
+                other = Combobox(self, values=list_)
+                other.current(list_.index(v))
+                other.grid(row=2+nb, column=1, sticky="EW", padx=50, pady=10)
+            elif k == "icon":
+                list_ = [i.name.upper().replace(" ", "_") for i in self.main.project.objects["blocks"]] + ICON_BLOCKS
+                other = Combobox(self, values=list_)
+                other.current(list_.index(v))
+                other.grid(row=2+nb, column=1, sticky="EW", padx=50, pady=10)
+            elif k == "search":
+                var = IntVar()
+                other = [Checkbutton(self, variable=var), var]
+                if v:
+                    other[0].invoke()
+                other[0].grid(row=2+nb, column=1, sticky="EW", padx=50, pady=10)
             else:
                 other = Entry(self)
-                other.grid(row=2+nb, column=1, sticky="EW", padx=50, pady=10)
                 other.insert(0, v)
+                other.grid(row=2+nb, column=1, sticky="EW", padx=50, pady=10)
             nb += 1
             self.properties_widgets[k] = [label, other]
 
@@ -53,58 +73,6 @@ class PropertiesFrame(Frame):
         self.properties_widgets['BTN_VALIDATE'] = [btn]
 
     def set_properties(self):
-        name = self.properties_widgets["name"][1].get()
-        registry_name = self.properties_widgets["registry_name"][1].get().lower().replace(" ", "_")
-        material = BLOCK_MATERIALS[self.properties_widgets["material"][1].current()]
-        hardness = self.properties_widgets["hardness"][1].get()
-        resistance = self.properties_widgets["resistance"][1].get()
-        texture = self.properties_widgets["texture"][1].get()
-        script = self.properties_widgets["script"][1].get()
-        change = False
-
-        if name != "" and name != self.current_obj.name:
-            change = True
-            old = self.current_obj.name
-            self.current_obj.name = name
-            self.main.elements.reload_object(old, self.current_obj)
-        elif name == "":
-            self.properties_widgets["name"][1].insert(0, self.current_obj.name)
-
-        if registry_name != "" and registry_name != self.current_obj.registry_name:
-            change = True
-            self.current_obj.registry_name = registry_name
-            self.properties_widgets["registry_name"][1].delete(0, "end")
-            self.properties_widgets["registry_name"][1].insert(0, registry_name)
-        elif registry_name == "":
-            self.properties_widgets["registry_name"][1].insert(0, self.current_obj.registry_name)
-
-        if material != self.current_obj.material:
-            change = True
-            self.current_obj.material = material
-
-        if hardness != "" and hardness != self.current_obj.hardness:
-            change = True
-            self.current_obj.hardness = hardness
-        elif hardness == "":
-            self.properties_widgets["hardness"][1].insert(0, self.current_obj.hardness)
-
-        if resistance != "" and resistance != self.current_obj.resistance:
-            change = True
-            self.current_obj.resistance = resistance
-        elif resistance == "":
-            self.properties_widgets["resistance"][1].insert(0, self.current_obj.resistance)
-
-        if texture != "" and texture != self.current_obj.texture:
-            change = True
-            self.current_obj.texture = texture
-        elif texture == "":
-            self.properties_widgets["texture"][1].insert(0, self.current_obj.texture)
-
-        if script != "" and script != self.current_obj.script:
-            change = True
-            self.current_obj.script = script
-        elif script == "":
-            self.properties_widgets["script"][1].insert(0, self.current_obj.script)
-
+        change = self.current_obj.change(self.properties_widgets, self.main)
         if change:
             self.main.project.edit_objects()

@@ -8,13 +8,24 @@
     "objects": {
         "blocks": [
             {
-                "name": "Bloc",
+                "name": "ProjectBloc",
                 "registry_name": "bloc",
                 "material": "ROCK",
                 "hardness": "25F",
                 "resistance": "600F",
                 "texture": "bloc",
+                "itemgroup": "PROJECTTAB_GROUP",
                 "type": "SimpleBlock",
+                "script": ""
+            }
+        ],
+        "itemgroups": [
+            {
+                "name": "ProjectTab",
+                "registry_name": "projecttab",
+                "icon": "PROJECTBLOC",
+                "search": true,
+                "type": "ItemGroup",
                 "script": ""
             }
         ]

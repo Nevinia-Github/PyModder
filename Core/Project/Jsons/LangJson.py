@@ -11,5 +11,7 @@ class EnJson:
         file = {}
         for i in self.project.objects["blocks"]:
             file["block."+self.project.modid+"."+i.registry_name] = i.name
+        for i in self.project.objects["itemgroups"]:
+            file["itemGroup."+i.registry_name] = i.name
         with open(os.path.join(self.project.paths["Assets"], "lang", "en_us.json"), "w") as f:
             f.write(json.dumps(file, indent=4))

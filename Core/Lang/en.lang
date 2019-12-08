@@ -12,6 +12,9 @@ properties_title: Properties
 properties_name: Name:
 properties_registry_name: Registry Name:
 properties_material: Material:
+properties_itemgroup: Item Tab:
+properties_icon: Icon:
+properties_search: Has SearchBar:
 properties_hardness: Hardness:
 properties_resistance: Resistance:
 properties_texture: Texture:
