@@ -4,23 +4,20 @@ import json
 from shutil import copyfile
 import shutil
 import hashlib
+from multiprocessing.pool import ThreadPool
+
+
+class Object:
+    def __init__(self, path, url, kind, name=""):
+        self.path = path
+        self.url = url
+        self.kind = kind
+        self.name = name
 
 
 def mkd(path):
     if not os.path.isdir(path):
         os.makedirs(path)
-
-
-def download(url, path):
-    dirpath = os.path.dirname(path)
-    mkd(dirpath)
-
-    response = requests.get(url, stream=True)
-    if int(response.status_code / 100) is not 2:
-        return
-
-    with open(path, 'wb') as f:
-        shutil.copyfileobj(response.raw, f)
 
 
 class Download:
@@ -29,6 +26,8 @@ class Download:
         self.checkHash = True
         self.profile = _profile
         self.doFireEvents = True
+        self.current_nb = 0
+        self.max_nb = 0
         self.downloadFileChangedEvent = callback
 
     def fire_event(self, kind, name, max, current):
@@ -51,7 +50,26 @@ class Download:
     def check_valide(self, path, fhash):
         return os.path.isfile(path) and self.check_sha1(path, fhash)
 
-    def download_all(self, download_assets):
+    def download(self, obj):
+        self.current_nb += 1
+        self.fire_event(obj.kind, obj.name, self.max_nb, self.current_nb)
+
+        dirpath = os.path.dirname(obj.path)
+        mkd(dirpath)
+
+        if obj.kind == "Library" and obj.path.endswith("forge-1.14.4-28.1.0.jar"):
+            shutil.copyfile(os.path.join(self.launcher.version_dir, "1.14.4-forge-28.1.0", "1.14.4-forge-28.1.0.jar"),
+                            obj.path)
+            return
+
+        response = requests.get(obj.url, stream=True)
+        if int(response.status_code / 100) is not 2:
+            return
+
+        with open(obj.path, 'wb') as f:
+            shutil.copyfileobj(response.raw, f)
+
+    def download_all(self, download_assets, toplevel):
         self.download_libraries()
         self.download_minecraft()
         if download_assets:
@@ -59,20 +77,21 @@ class Download:
             self.download_resources()
 
     def download_libraries(self):
-        count = len(self.profile.libraries)
-        for i in range(0, count):
-            lib = self.profile.libraries[i]
-            if lib.required and lib.path and lib.url and not self.check_valide(lib.path, lib.hash):
-                download(lib.url, lib.path)
-
-            self.fire_event("library", lib.name, count, i + 1)
+        libs = [Object(i.path, i.url, "Library", i.name) for i in self.profile.libraries if i.required and i.path and
+                i.url and not self.check_valide(i.path, i.hash)]
+        self.max_nb = len(libs)
+        self.current_nb = 0
+        result = ThreadPool().imap(self.download, libs)
+        for _ in result:
+            pass
 
     def download_index(self):
         path = os.path.normpath(self.launcher.indexes_dir + "/" + self.profile.asset_id + ".json")
+        self.current_nb = 0
+        self.max_nb = 1
         if self.profile.asset_url and not self.check_valide(path, self.profile.asset_hash):
-            download(self.profile.asset_url, path)
-
-        self.fire_event("index", self.profile.asset_id, 1, 1)
+            obj = Object(path, self.profile.asset_url, "Index", self.profile.asset_id)
+            self.download(obj)
 
     def download_resources(self):
         index_path = os.path.normpath(self.launcher.indexes_dir + "/" + self.profile.asset_id + ".json")
@@ -85,45 +104,22 @@ class Download:
 
         index = json.loads(content)
 
-        is_virtual = False
-        v = index.get("virtual")
-        if v and v is True:
-            is_virtual = True
+        items = index.get("objects").values()
+        objects = []
+        for i in items:
 
-        is_map_resource = False
-        m = index.get("map_to_resources")
-        if m and m is True:
-            is_map_resource = True
-
-        items = list(index.get("objects").items())
-        count = len(items)
-        for i in range(0, count):
-            key = items[i][0]
-            value = items[i][1]
-
-            hash_ = value.get("hash")
+            hash_ = i.get("hash")
             hash_name = hash_[:2] + "/" + hash_
             hash_path = os.path.normpath(self.launcher.objects_dir + "/" + hash_name)
             hash_url = "http://resources.download.minecraft.net/" + hash_name
 
             if not os.path.isfile(hash_path):
-                download(hash_url, hash_path)
-
-            if is_virtual:
-                res_path = os.path.normpath(self.launcher.legacy_dir + "/" + key)
-
-                if not os.path.isfile(res_path):
-                    mkd(os.path.dirname(res_path))
-                    copyfile(hash_path, res_path)
-
-            if is_map_resource:
-                res_path = os.path.normpath(self.launcher.resources_dir + "/" + key)
-
-                if not os.path.isfile(res_path):
-                    mkd(os.path.dirname(res_path))
-                    copyfile(hash_path, res_path)
-
-            self.fire_event("resource", "", count, i + 1)
+                objects.append(Object(hash_path, hash_url, "Resource"))
+        self.max_nb = len(objects)
+        self.current_nb = 0
+        result = ThreadPool().imap(self.download, objects)
+        for _ in result:
+            pass
 
     def download_minecraft(self):
         if not self.profile.client_dl_url:
@@ -131,7 +127,8 @@ class Download:
 
         id_ = self.profile.jar
         path = os.path.normpath(self.launcher.version_dir + "/" + id_ + "/" + id_ + ".jar")
+        self.current_nb = 0
+        self.max_nb = 1
         if not self.check_valide(path, self.profile.client_hash):
-            download(self.profile.client_dl_url, path)
-
-        self.fire_event("minecraft", id_, 1, 1)
+            obj = Object(path, self.profile.client_dl_url, "Minecraft", id_)
+            self.download(obj)

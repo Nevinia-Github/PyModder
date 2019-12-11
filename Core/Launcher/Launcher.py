@@ -2,11 +2,13 @@ import os
 import shutil
 from Core.Launcher.MCVersion import MCVersionsList
 from Core.Launcher.Download import Download
-from tkinter.messagebox import showinfo
+from tkinter import Toplevel
+from tkinter.ttk import Label
 import re
 import zipfile
 import subprocess
 import sys
+import threading
 
 pre_compiled = re.compile(r"\\$\\{(.*?)}")
 
@@ -84,19 +86,24 @@ class Launcher:
 
         self.version = MCVersionsList(self).get("1.14.4-forge-28.1.0")
 
+        self.top = Toplevel(main.screen)
+        self.top_l = Label(self.top, text="Download")
+        self.top_l.pack()
+        self.top.lift()
         download = Download(self, self.version, self.download_event)
-        showinfo("Téléchargement de Minecraft", "Le téléchargement de Minecraft va être lancer.\nCelui ci peut prendre "
-                                                "un certain temps.\nVeuillez patientez...")
-        download.download_all(True)
-
+        thread = threading.Thread(target=download.download_all, args=(True, self.top))
+        thread.start()
         self.start_profile = self.version
         self.launcher_name = "PyModder"
 
     def download_event(self, kind, name, max_, current):
         if name == "":
             self.main.logger.info("Download %s (%s / %s)", kind, current, max_)
+            self.top_l.configure(text="Download {} ({} / {})".format(kind, current, max_))
         else:
             self.main.logger.info("Download %s (%s / %s) : %s", kind, current, max_, name)
+            self.top_l.configure(text="Download {} ({} / {}) : {}".format(kind, current, max_, name))
+        self.top.lift()
 
     def launch(self):
         self.clean_natives()

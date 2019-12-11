@@ -9,6 +9,8 @@ class Library:
     def __init__(self, name, path, url, native, hash_):
         self.name = name
         self.path = path[:-1]
+        if self.path.endswith(".ja"):
+            self.path += "r"
         self.url = url
         self.required = True
         self.hash = hash_
@@ -40,9 +42,9 @@ class Library:
             path = os.path.join(launcher.libs_dir, json.get("path"))
             url = json.get("url")
             if not url:
-                url = default_libs_server + path
+                url = default_libs_server + json.get("path")
             elif not url.split('/')[-1]:
-                url += path
+                url += json.get("path")
             return Library(name, path, url, True if native_id else False, json.get("sha1"))
 
         classif = downloads.get("classifiers")
@@ -59,9 +61,9 @@ class Library:
                 path = os.path.join(launcher.libs_dir, job.get("path"))
                 url = job.get("url")
                 if not url:
-                    url = default_libs_server + path
+                    url = default_libs_server + json.get("path")
                 elif not url.split('/')[-1]:
-                    url += path
+                    url += json.get("path")
 
                 temp = Library(name, path, url, True if native_id else False, job.get("sha1"))
 
@@ -71,9 +73,9 @@ class Library:
                     path = os.path.join(launcher.libs_dir, json.get("path"))
                     url = json.get("url")
                     if not url:
-                        url = default_libs_server + path
+                        url = default_libs_server + json.get("path")
                     elif not url.split('/')[-1]:
-                        url += path
+                        url += json.get("path")
 
                     return Library(name, path, url, True if "" else False, json.get("sha1")), temp
 
@@ -85,9 +87,9 @@ class Library:
             path = os.path.join(launcher.libs_dir, json.get("path"), "")
             url = json.get("url")
             if not url:
-                url = default_libs_server + path
+                url = default_libs_server + json.get("path")
             elif not url.split('/')[-1]:
-                url += path
+                url += json.get("path")
 
             return Library(name, path, url, True if "" else False, json.get("sha1"))
 
