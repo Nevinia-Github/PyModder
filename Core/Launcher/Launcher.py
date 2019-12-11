@@ -2,13 +2,13 @@ import os
 import shutil
 from Core.Launcher.MCVersion import MCVersionsList
 from Core.Launcher.Download import Download
-from tkinter import Toplevel
-from tkinter.ttk import Label
 import re
 import zipfile
 import subprocess
 import sys
 import threading
+
+from Core.Windows.DownloadWindow import DownloadWindow
 
 pre_compiled = re.compile(r"\\$\\{(.*?)}")
 
@@ -86,10 +86,8 @@ class Launcher:
 
         self.version = MCVersionsList(self).get("1.14.4-forge-28.1.0")
 
-        self.top = Toplevel(main.screen)
-        self.top_l = Label(self.top, text="Download")
-        self.top_l.pack()
-        self.top.lift()
+        self.top = DownloadWindow(main)
+        self.top.wm_attributes("-topmost", 1)
         download = Download(self, self.version, self.download_event)
         thread = threading.Thread(target=download.download_all, args=(True, self.top))
         thread.start()
@@ -99,11 +97,14 @@ class Launcher:
     def download_event(self, kind, name, max_, current):
         if name == "":
             self.main.logger.info("Download %s (%s / %s)", kind, current, max_)
-            self.top_l.configure(text="Download {} ({} / {})".format(kind, current, max_))
+            self.top.current.configure(text=self.main.lang.get_translate("download_"+kind,
+                                                                         "Download "+kind+" ({} / {})", current, max_))
         else:
             self.main.logger.info("Download %s (%s / %s) : %s", kind, current, max_, name)
-            self.top_l.configure(text="Download {} ({} / {}) : {}".format(kind, current, max_, name))
-        self.top.lift()
+            self.top.current.configure(text=self.main.lang.get_translate("download_"+kind,
+                                                                         "Download "+kind+" ({} / {}) : {}",
+                                                                         current, max_, name))
+        self.top.progress.configure(maximum=max_, value=current)
 
     def launch(self):
         self.clean_natives()

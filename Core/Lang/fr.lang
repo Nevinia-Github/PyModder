@@ -23,6 +23,9 @@ properties_type_: Type :
 properties_validate: Valider
 
 title_param: Paramètres
+general_param: Général
+project_param: Projet
+informations_param: Informations
 
 title_general: Paramètres Généraux
 lang_general: Langue :
@@ -43,3 +46,15 @@ version_informations: Version: {}
 pyver_informations: Version Python: {}
 tkver_informations: Version Tkinter: {}
 tclver_informations: Version Tcl: {}
+
+compilation_title: Compilation
+compilation_begin: La compilation de votre mod va commencer.\nElle peut prendre jusqu'à plusieurs minutes.
+compilation_success: Compilation finie.\nVotre fichier est disponible dans le dossier du mods.\nSon nom est {}
+compilation_fail: La compilation a échoué.\nRegardez les logs.
+
+download_title: Téléchargement
+download_no: Pas de téléchargement
+download_Library: Téléchargement librairie ({} / {}) : {}
+download_Index: Téléchargement index ({} / {}) : {}
+download_Minecraft: Téléchargement Minecraft ({} / {}) : {}
+download_Resource: Téléchargement ressource ({} / {})

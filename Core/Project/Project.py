@@ -4,6 +4,9 @@ import requests
 import io
 import zipfile
 import shutil
+import subprocess
+
+from tkinter.messagebox import showinfo, showerror
 
 from Core.Project.JavaClass import MainClass, BlocksClass
 from Core.Project.Jsons import BlockJson, BlockStatesJson, LangJson
@@ -58,6 +61,29 @@ class Project:
             self.main.elements.add_object(i)
 
         self.old_modid = self.modid
+
+    def build(self):
+        showinfo(self.main.lang.get_translate("compilation_title", "Compilation"),
+                 self.main.lang.get_translate("compilation_begin", "The compilation of your mod will start.\nIt may "
+                                                                   "take up to several minutes."))
+        sub = subprocess.run(["cd", self.paths["Folder"], "&&", r".\gradlew.bat", "build"],
+                             capture_output=True, shell=True)
+        path = os.path.join(self.paths["Folder"], "build", "libs",
+                            self.name + "-" + self.version + ".jar")
+        shutil.copy(path, os.path.join(self.paths["Folder"], self.name + "-" + self.version + ".jar"))
+        error = False
+        for i in sub.stdout.decode("utf8").split("\n"):
+            if "FAILED" in i:
+                error = True
+            self.main.logger.debug(i)
+        if not error:
+            showinfo(self.main.lang.get_translate("compilation_title", "Compilation"),
+                     self.main.lang.get_translate("compilation_success",
+                                                  "The compilation was successful.\nYour file is available in the mods"
+                                                  " folder.\nIts name is {}", self.name + "-" + self.version + ".jar"))
+        else:
+            showerror(self.main.lang.get_translate("compilation_title", "Compilation"),
+                      self.main.lang.get_translate("compilation_failed", "The compilation failed.\nLook at the logs."))
 
     def save(self):
         datas = {

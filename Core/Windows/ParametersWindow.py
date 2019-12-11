@@ -24,9 +24,12 @@ class ParametersWindow(Toplevel):
         s.configure('my.TButton', font=('Arial', 16))
 
         self.buttons = {
-            "Informations": Button(self, text="Informations", style="my.TButton", command=lambda x=0: self.set_page(x)),
-            "Général": Button(self, text="Général", style="my.TButton", command=lambda x=1: self.set_page(x)),
-            "Projet": Button(self, text="Projet", style="my.TButton", command=lambda x=2: self.set_page(x))
+            "Informations": Button(self, text=main.lang.get_translate("informations_param", "Information"),
+                                   style="my.TButton", command=lambda x=0: self.set_page(x)),
+            "Général": Button(self, text=main.lang.get_translate("general_param", "General"),
+                              style="my.TButton", command=lambda x=1: self.set_page(x)),
+            "Projet": Button(self, text=main.lang.get_translate("project_param", "Project"),
+                             style="my.TButton", command=lambda x=2: self.set_page(x))
         }
 
         self.pages = [

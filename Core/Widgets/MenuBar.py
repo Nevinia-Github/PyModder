@@ -8,6 +8,7 @@ from Core.Launcher.Launcher import Launcher
 import os
 import subprocess
 import shutil
+import threading
 
 
 class MenuBar(Frame):
@@ -70,29 +71,13 @@ class MenuBar(Frame):
         self.main.project.save()
 
     def launch(self):
-        self.main.launcher.launch()
+        thread = threading.Thread(target=self.main.launcher.launch)
+        thread.start()
 
     def build(self):
-        showinfo("Compilation à venir", "La compilation va être effectuée.\nElle peut prendre quelques minutes et "
-                                        "l'application peut être gelée. Attendez le temps de la compilation.\n"
-                                        "Appuyez sur 'Ok' pour continuer.")
-        sub = subprocess.run(["cd", self.main.project.paths["Folder"], "&&", r".\gradlew.bat", "build"],
-                             capture_output=True, shell=True)
-        path = os.path.join(self.main.project.paths["Folder"], "build", "libs",
-                            self.main.project.name + "-" + self.main.project.version + ".jar")
-        shutil.copy(path, os.path.join(self.main.project.paths["Folder"],
-                                       self.main.project.name + "-" + self.main.project.version + ".jar"))
-        error = False
-        for i in sub.stdout.decode("utf8").split("\n"):
-            if "FAILED" in i:
-                error = True
-            self.main.logger.debug(i)
-        if not error:
-            showinfo("Compilation finie",
-                     "Compilation finie.\nVotre fichier est disponible dans le dossier du mods.\nSon nom est " +
-                     self.main.project.name + "-" + self.main.project.version + ".jar")
-        else:
-            showerror("Compilation finie", "La compilation a échoué.\nRegardez les logs.")
+        self.main.logger.info("Begin Compilation")
+        thread = threading.Thread(target=self.main.project.build)
+        thread.start()
 
     def open_param(self):
         ParametersWindow(self.main)

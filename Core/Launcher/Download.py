@@ -1,7 +1,6 @@
 import os
 import requests
 import json
-from shutil import copyfile
 import shutil
 import hashlib
 from multiprocessing.pool import ThreadPool
@@ -56,11 +55,6 @@ class Download:
 
         dirpath = os.path.dirname(obj.path)
         mkd(dirpath)
-
-        if obj.kind == "Library" and obj.path.endswith("forge-1.14.4-28.1.0.jar"):
-            shutil.copyfile(os.path.join(self.launcher.version_dir, "1.14.4-forge-28.1.0", "1.14.4-forge-28.1.0.jar"),
-                            obj.path)
-            return
 
         response = requests.get(obj.url, stream=True)
         if int(response.status_code / 100) is not 2:
