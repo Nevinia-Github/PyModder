@@ -31,7 +31,7 @@ public class ProjectTest
         @Override        public boolean hasSearchBar()
         {
             return true;        }
-    };
+                    };
 
     
     public ProjectTest()

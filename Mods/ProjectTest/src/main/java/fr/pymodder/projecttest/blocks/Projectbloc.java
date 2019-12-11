@@ -11,4 +11,6 @@ public class Projectbloc extends Block
         super(Block.Properties.create(Material.ROCK).hardnessAndResistance(25F, 600F));
         setRegistryName("bloc");
     }
+    
+    
 }

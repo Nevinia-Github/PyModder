@@ -26,7 +26,7 @@ class SimpleBlock:
         hardness = properties_widgets["hardness"][1].get()
         resistance = properties_widgets["resistance"][1].get()
         texture = properties_widgets["texture"][1].get()
-        script = properties_widgets["script"][1].get()
+        script = properties_widgets["script"][1].get("1.0")
         change = False
 
         if name != "" and name != self.name:
@@ -75,7 +75,7 @@ class SimpleBlock:
             change = True
             self.script = script
         elif script == "":
-            properties_widgets["script"][1].insert(0, self.script)
+            properties_widgets["script"][1].insert("1.0", self.script)
 
         return change
 

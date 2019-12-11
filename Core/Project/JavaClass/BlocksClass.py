@@ -15,7 +15,8 @@ class SimpleBlocksClass:
             "MATERIAL": self.bloc.material,
             "HARDNESS": self.bloc.hardness,
             "RESISTANCE": self.bloc.resistance,
-            "REGISTRY_NAME": self.bloc.registry_name
+            "REGISTRY_NAME": self.bloc.registry_name,
+            "SCRIPT": "\n".join("    " + i for i in self.bloc.script.split("\n"))
         }
         file = """
 package PACKAGE.blocks;
@@ -30,6 +31,8 @@ public class NAMECLASS extends Block
         super(Block.Properties.create(Material.MATERIAL).hardnessAndResistance(HARDNESS, RESISTANCE));
         setRegistryName("REGISTRY_NAME");
     }
+    
+SCRIPT
 }
 """
         for k, v in replaces.items():

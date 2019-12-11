@@ -1,5 +1,5 @@
 from tkinter.ttk import Frame, Separator, Label, Entry, Combobox, Button, Style, Checkbutton
-from tkinter import HORIZONTAL, IntVar
+from tkinter import HORIZONTAL, IntVar, Text
 
 from Core.Utils.Constants import BLOCK_MATERIALS, ITEMGROUP, ICON_BLOCKS
 
@@ -57,6 +57,10 @@ class PropertiesFrame(Frame):
                 if v:
                     other[0].invoke()
                 other[0].grid(row=2+nb, column=1, sticky="EW", padx=50, pady=10)
+            elif k == "script":
+                other = Text(self)
+                other.insert("1.0", v)
+                other.grid(row=2+nb, column=1, sticky="EW", padx=50, pady=10)
             else:
                 other = Entry(self)
                 other.insert(0, v)

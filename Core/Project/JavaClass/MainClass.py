@@ -20,7 +20,8 @@ class MainClass:
                     "ICON": "Blocks." + i.icon if i.icon in ICON_BLOCKS else "NAMEBlocks." + i.icon,
                     "NAME": self.project.name,
                     "PACKAGE": "fr.pymodder.MODID",
-                    "MODID": self.project.modid
+                    "MODID": self.project.modid,
+                    "SCRIPT": "\n".join("        " + l for l in i.script.split("\n"))
                 }
                 if i.icon not in ICON_BLOCKS and not extra_imports.endswith("Blocks;"):
                     extra_imports += "\nimport PACKAGE.blocks.NAMEBlocks;"
@@ -38,6 +39,7 @@ class MainClass:
                     '        {',
                     '            return SEARCH;'
                     '        }',
+                    '        SCRIPT'
                     '    };'
                 ])
                 groups += "\n"
