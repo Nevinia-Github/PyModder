@@ -3,7 +3,7 @@ from Core.Utils.Constants import BLOCK_MATERIALS, ITEMGROUP
 
 class SimpleBlock:
     def __init__(self, name="Block", texture="", material="ROCK", hardness="25F", resistance="600F",
-                 registry_name=None, script="", itemgroup=""):
+                 registry_name=None, script="", itemgroup="BUILDING_BLOCKS"):
         self.name = name
         if registry_name is None:
             self.registry_name = name.lower().replace(" ", "_")
