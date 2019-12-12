@@ -8,9 +8,9 @@ import subprocess
 
 from tkinter.messagebox import showinfo, showerror
 
-from Core.Project.JavaClass import MainClass, BlocksClass
-from Core.Project.Jsons import BlockJson, BlockStatesJson, LangJson
-from Core.Project.Objects import Blocks, ItemGroup
+from Core.Project.JavaClass import MainClass, BlocksClass, ItemsClass
+from Core.Project.Jsons import BlockJson, BlockStatesJson, LangJson, ItemJson
+from Core.Project.Objects import Blocks, ItemGroup, Items
 
 
 class Project:
@@ -26,7 +26,8 @@ class Project:
 
         self.objects = {
             "blocks": [],
-            "itemgroups": []
+            "itemgroups": [],
+            "items": []
         }
 
         if not os.path.exists(self.paths["Folder"]):
@@ -52,12 +53,14 @@ class Project:
                 [Blocks.SimpleBlock.from_json(i) for i in datas["objects"]["blocks"] if i["type"] == "SimpleBlock"]
             self.objects["itemgroups"] += \
                 [ItemGroup.ItemGroup.from_json(i) for i in datas["objects"]["itemgroups"] if i["type"] == "ItemGroup"]
+            self.objects["items"] += \
+                [Items.SimpleItem.from_json(i) for i in datas["objects"]["items"] if i["type"] == "SimpleItem"]
             self.paths["Main"] = os.path.join(self.paths["Java"], "fr", "pymodder", self.modid)
             self.paths["Assets"] = os.path.join(self.paths["Ressources"], "assets", self.modid)
 
         self.main.logger.info("Project loaded.")
 
-        for i in self.objects["blocks"] + self.objects["itemgroups"]:
+        for i in self.objects["blocks"] + self.objects["itemgroups"] + self.objects["items"]:
             self.main.elements.add_object(i)
 
         self.old_modid = self.modid
@@ -95,7 +98,8 @@ class Project:
             "description": self.description,
             "objects": {
                 "blocks": [i.to_json() for i in self.objects["blocks"]],
-                "itemgroups": [i.to_json() for i in self.objects["itemgroups"]]
+                "itemgroups": [i.to_json() for i in self.objects["itemgroups"]],
+                "items": [i.to_json() for i in self.objects["items"]]
             }
         }
         with open(os.path.join(self.paths["Folder"], "project.json"), "w") as f:
@@ -134,6 +138,9 @@ class Project:
         elif type_ == "ItemGroup":
             object_ = ItemGroup.ItemGroup(name)
             type_ = "itemgroups"
+        elif type_ == "SimpleItem":
+            object_ = Items.SimpleItem(name)
+            type_ = "items"
         else:
             raise ValueError("Wrong Type : "+type_)
         self.objects[type_].append(object_)
@@ -143,8 +150,7 @@ class Project:
     def edit_objects(self):
         LangJson.EnJson(self).save()
         if len(self.objects["blocks"]):
-            blocks = BlocksClass.BlocksClass(self)
-            blocks.save()
+            BlocksClass.BlocksClass(self).save()
             os.makedirs(os.path.join(self.paths["Assets"], "textures", "block"), exist_ok=True)
             for i in self.objects["blocks"]:
                 if i.type_ == "SimpleBlock":
@@ -152,8 +158,19 @@ class Project:
                     BlockStatesJson.BlockStatesJson(self, i).save()
                     BlockJson.SimpleBlockJson(self, i).save()
                     BlockJson.BlockItemJson(self, i).save()
-                    shutil.copyfile(os.path.join(self.paths["Folder"], "textures", i.texture+".png"),
-                                    os.path.join(self.paths["Assets"], "textures", "block", i.texture+".png"))
+                    if i.texture != "":
+                        shutil.copyfile(os.path.join(self.paths["Folder"], "textures", i.texture+".png"),
+                                        os.path.join(self.paths["Assets"], "textures", "block", i.texture+".png"))
+        if len(self.objects["items"]):
+            ItemsClass.ItemsClass(self).save()
+            os.makedirs(os.path.join(self.paths["Assets"], "textures", "item"), exist_ok=True)
+            for i in self.objects["items"]:
+                if i.type_ == "SimpleItem":
+                    ItemsClass.SimpleItemClass(self, i).save()
+                    ItemJson.SimpleItemJson(self, i).save()
+                    if i.texture != "":
+                        shutil.copyfile(os.path.join(self.paths["Folder"], "textures", i.texture+".png"),
+                                        os.path.join(self.paths["Assets"], "textures", "item", i.texture+".png"))
 
     def edit_main(self):
         main = MainClass.MainClass(self)

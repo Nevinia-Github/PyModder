@@ -12,7 +12,7 @@ ITEMGROUP = [
 ]
 
 ELEMENTS = [
-    "SimpleBlock", "ItemGroup"
+    "SimpleBlock", "ItemGroup", "SimpleItem"
 ]
 
 ICON_BLOCKS = [

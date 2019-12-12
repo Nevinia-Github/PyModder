@@ -13,10 +13,10 @@
                 "material": "ROCK",
                 "hardness": "25F",
                 "resistance": "600F",
-                "texture": "bloc",
+                "texture": "texture",
                 "itemgroup": "PROJECTTAB_GROUP",
                 "type": "SimpleBlock",
-                "script": ""
+                "script": "\n"
             }
         ],
         "itemgroups": [
@@ -27,6 +27,16 @@
                 "search": true,
                 "type": "ItemGroup",
                 "script": ""
+            }
+        ],
+        "items": [
+            {
+                "name": "ProjectItem",
+                "registry_name": "projectitem",
+                "texture": "texture",
+                "itemgroup": "PROJECTTAB_GROUP",
+                "type": "SimpleItem",
+                "script": "\n"
             }
         ]
     }

@@ -1,4 +1,5 @@
 {
     "block.projecttest.bloc": "ProjectBloc",
-    "itemGroup.projecttab": "ProjectTab"
+    "itemGroup.projecttab": "ProjectTab",
+    "item.projecttest.projectitem": "ProjectItem"
 }
