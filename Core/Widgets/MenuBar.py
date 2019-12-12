@@ -1,13 +1,10 @@
 from tkinter.ttk import Frame, Button, Separator
 from tkinter import PhotoImage, VERTICAL
-from tkinter.messagebox import showinfo, showerror
 from Core.Widgets.Tooltip import ToolTip
 from Core.Windows.ParametersWindow import ParametersWindow
 from Core.Launcher.Launcher import Launcher
 
 import os
-import subprocess
-import shutil
 import threading
 
 
