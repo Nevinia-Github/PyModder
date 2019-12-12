@@ -69,6 +69,7 @@ class Download:
         if download_assets:
             self.download_index()
             self.download_resources()
+        toplevel.destroy()
 
     def download_libraries(self):
         libs = [Object(i.path, i.url, "Library", i.name) for i in self.profile.libraries if i.required and i.path and
