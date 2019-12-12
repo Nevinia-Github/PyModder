@@ -69,17 +69,18 @@ class Project:
         showinfo(self.main.lang.get_translate("compilation_title", "Compilation"),
                  self.main.lang.get_translate("compilation_begin", "The compilation of your mod will start.\nIt may "
                                                                    "take up to several minutes."))
-        sub = subprocess.run(["cd", self.paths["Folder"], "&&", r".\gradlew.bat", "build"],
-                             capture_output=True, shell=True)
-        path = os.path.join(self.paths["Folder"], "build", "libs",
-                            self.name + "-" + self.version + ".jar")
-        shutil.copy(path, os.path.join(self.paths["Folder"], self.name + "-" + self.version + ".jar"))
+        sub = subprocess.Popen(["cd", self.paths["Folder"], "&&", r".\gradlew.bat", "build"],
+                               stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
         error = False
-        for i in sub.stdout.decode("utf8").split("\n"):
-            if "FAILED" in i:
+        for line in sub.stdout:
+            line = line.decode("utf8").replace("\n", "")
+            if "FAILED" in line:
                 error = True
-            self.main.logger.debug(i)
+            self.main.logger.debug(line)
         if not error:
+            path = os.path.join(self.paths["Folder"], "build", "libs",
+                                self.name + "-" + self.version + ".jar")
+            shutil.copy(path, os.path.join(self.paths["Folder"], self.name + "-" + self.version + ".jar"))
             showinfo(self.main.lang.get_translate("compilation_title", "Compilation"),
                      self.main.lang.get_translate("compilation_success",
                                                   "The compilation was successful.\nYour file is available in the mods"
