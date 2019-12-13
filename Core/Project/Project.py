@@ -211,7 +211,7 @@ class Project:
         z = zipfile.ZipFile(io.BytesIO(r.content))
         z.extractall(self.paths["Folder"])
         shutil.rmtree(os.path.join(self.paths["Java"], "com"))
-        os.makedirs(os.path.join(self.paths["Java"], "fr", "pymodder", self.modid))
+        os.makedirs(os.path.join(self.paths["Java"], "fr", "pymodder", self.modid), exist_ok=True)
         self.paths["Main"] = os.path.join(self.paths["Java"], "fr", "pymodder", self.modid)
         self.paths["Assets"] = os.path.join(self.paths["Ressources"], "assets", self.modid)
         os.makedirs(self.paths["Assets"])

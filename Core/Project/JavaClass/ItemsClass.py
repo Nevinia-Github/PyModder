@@ -16,7 +16,8 @@ class SimpleItemClass:
             "SCRIPT": "\n".join("    " + i for i in self.item.script.split("\n")),
             "ITEMGROUP": "ItemGroup." + self.item.itemgroup if self.item.itemgroup in ITEMGROUP else
             "NAME." + self.item.itemgroup,
-            "NAME": self.project.name
+            "NAME": self.project.name,
+            "STACKSIZE": self.item.stacksize
         }
         file = """
 package PACKAGE.items;
@@ -29,7 +30,7 @@ public class NAMECLASS extends Item
 {
     protected NAMECLASS()
     {
-        super(new Item.Properties().group(ITEMGROUP));
+        super(new Item.Properties().group(ITEMGROUP).maxStackSize(STACKSIZE));
         setRegistryName("REGISTRY_NAME");
     }
 

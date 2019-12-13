@@ -20,6 +20,7 @@ properties_resistance: Resistance:
 properties_texture: Texture:
 properties_script: Script:
 properties_type_: Type:
+properties_stacksize: Stack Size:
 properties_validate: Validate
 
 title_param: Parameters
