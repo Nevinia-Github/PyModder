@@ -8,7 +8,7 @@ public class Projectbloc extends Block
 {
     protected Projectbloc()
     {
-        super(Block.Properties.create(Material.ROCK).hardnessAndResistance(25F, 600F));
+        super(Block.Properties.create(Material.ROCK).hardnessAndResistance(2F, 6F));
         setRegistryName("bloc");
     }
     

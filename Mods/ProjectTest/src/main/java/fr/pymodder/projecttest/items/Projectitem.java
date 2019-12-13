@@ -9,7 +9,7 @@ public class Projectitem extends Item
 {
     protected Projectitem()
     {
-        super(new Item.Properties().group(ProjectTest.PROJECTTAB_GROUP));
+        super(new Item.Properties().group(ProjectTest.PROJECTTAB_GROUP).maxStackSize(25));
         setRegistryName("projectitem");
     }
 
