@@ -90,6 +90,22 @@ class Project:
                       self.main.lang.get_translate("compilation_failed", "The compilation failed.\nLook at the logs."))
 
     def save(self):
+        shutil.rmtree(os.path.join(self.paths["Folder"], "src"))
+        os.makedirs(os.path.join(self.paths["Java"], "fr", "pymodder", self.modid), exist_ok=True)
+        self.paths["Main"] = os.path.join(self.paths["Java"], "fr", "pymodder", self.modid)
+        self.paths["Assets"] = os.path.join(self.paths["Ressources"], "assets", self.modid)
+        os.makedirs(self.paths["Assets"], exist_ok=True)
+        os.makedirs(os.path.join(self.paths["Ressources"], "META-INF"))
+        with open(os.path.join(self.paths["Ressources"], "pack.mcmeta"), "w") as f:
+            f.write(json.dumps({
+                "pack": {
+                    "description": "examplemod resources",
+                    "pack_format": 4,
+                    "_comment": "A pack_format of 4 requires json lang files. Note: we require v4 pack meta for all mo"
+                                "ds."
+                }
+            }, indent=4))
+
         datas = {
             "modid": self.modid,
             "version": self.version,
