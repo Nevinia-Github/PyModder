@@ -3,7 +3,7 @@ from Core.Utils.Constants import BLOCK_MATERIALS, ITEMGROUP
 
 class SimpleBlock:
     def __init__(self, name="Block", texture="", material="ROCK", hardness="25F", resistance="600F",
-                 registry_name=None, script="", itemgroup="BUILDING_BLOCKS"):
+                 registry_name=None, script="", itemgroup="BUILDING_BLOCKS", loot=True):
         self.name = name
         if registry_name is None:
             self.registry_name = name.lower().replace(" ", "_")
@@ -13,8 +13,9 @@ class SimpleBlock:
         self.hardness = hardness
         self.resistance = resistance
         self.texture = texture
-        self.script = script
+        self.loot = loot
         self.itemgroup = itemgroup
+        self.script = script
         self.type_ = "SimpleBlock"
 
     def change(self, properties_widgets, main):
@@ -24,6 +25,7 @@ class SimpleBlock:
         list_ = [i.name.upper().replace(" ", "_") + "_GROUP" for i in main.project.objects["itemgroups"]] + ITEMGROUP
         itemgroup = list_[properties_widgets["itemgroup"][1].current()]
         hardness = properties_widgets["hardness"][1].get()
+        loot = properties_widgets["loot"][1][1].get()
         resistance = properties_widgets["resistance"][1].get()
         texture = properties_widgets["texture"][1].get()
         script = properties_widgets["script"][1].get("1.0")
@@ -48,6 +50,10 @@ class SimpleBlock:
         if material != self.material:
             change = True
             self.material = material
+
+        if loot != self.loot:
+            change = True
+            self.loot = loot
 
         if itemgroup != self.itemgroup:
             change = True
@@ -85,7 +91,7 @@ class SimpleBlock:
     def to_json(self):
         return {"name": self.name, "registry_name": self.registry_name, "material": self.material,
                 "hardness": self.hardness, "resistance": self.resistance, "texture": self.texture,
-                "itemgroup": self.itemgroup, "type": self.type_, "script": self.script}
+                "itemgroup": self.itemgroup, "type": self.type_, "loot": self.loot, "script": self.script}
 
     @classmethod
     def from_json(cls, datas):
@@ -96,9 +102,11 @@ class SimpleBlock:
         resistance = datas["resistance"]
         texture = datas["texture"]
         itemgroup = datas["itemgroup"]
+        loot = datas["loot"]
         script = datas["script"]
-        return SimpleBlock(name, texture, material, hardness, resistance, registry_name, script, itemgroup)
+        return SimpleBlock(name, texture, material, hardness, resistance, registry_name, script, itemgroup, loot)
 
     def __str__(self):
-        return "{}({}, {}, {}, {}, {}, {}, {})".format(self.type_, self.name, self.texture, self.registry_name,
-                                                       self.material, self.hardness, self.resistance, self.itemgroup)
+        return "{}({}, {}, {}, {}, {}, {}, {}, {})".format(self.type_, self.name, self.texture, self.registry_name,
+                                                           self.material, self.hardness, self.resistance,
+                                                           self.itemgroup, self.loot)

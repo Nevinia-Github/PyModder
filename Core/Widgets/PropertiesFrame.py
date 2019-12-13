@@ -51,7 +51,7 @@ class PropertiesFrame(Frame):
                 other = Combobox(self, values=list_)
                 other.current(list_.index(v))
                 other.grid(row=2+nb, column=1, sticky="EW", padx=50, pady=10)
-            elif k == "search":
+            elif k in ("search", "loot"):
                 var = IntVar()
                 other = [Checkbutton(self, variable=var), var]
                 if v:

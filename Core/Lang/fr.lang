@@ -21,6 +21,7 @@ properties_texture: Texture :
 properties_script: Script :
 properties_type_: Type :
 properties_stacksize: Taille du Stack :
+properties_loot: Se Drop :
 properties_validate: Valider
 
 title_param: Paramètres

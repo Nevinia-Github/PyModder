@@ -9,7 +9,7 @@ import subprocess
 from tkinter.messagebox import showinfo, showerror
 
 from Core.Project.JavaClass import MainClass, BlocksClass, ItemsClass
-from Core.Project.Jsons import BlockJson, BlockStatesJson, LangJson, ItemJson
+from Core.Project.Jsons import BlockJson, BlockStatesJson, LangJson, ItemJson, BlockLootJson
 from Core.Project.Objects import Blocks, ItemGroup, Items
 
 
@@ -175,6 +175,8 @@ class Project:
                     BlockStatesJson.BlockStatesJson(self, i).save()
                     BlockJson.SimpleBlockJson(self, i).save()
                     BlockJson.BlockItemJson(self, i).save()
+                    if i.loot:
+                        BlockLootJson.SimpleBlockLootJson(self, i).save()
                     if i.texture != "":
                         shutil.copyfile(os.path.join(self.paths["Folder"], "textures", i.texture+".png"),
                                         os.path.join(self.paths["Assets"], "textures", "block", i.texture+".png"))
