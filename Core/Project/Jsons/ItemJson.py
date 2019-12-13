@@ -12,7 +12,7 @@ class SimpleItemJson:
         file = {
             "parent": "item/generated",
             "textures": {
-                "all": self.project.modid+":item/"+self.item.texture
+                "layer0": self.project.modid+":item/"+self.item.texture
             }
         }
         with open(os.path.join(self.project.paths["Assets"], "models", "item", self.item.registry_name+".json"), "w") \
