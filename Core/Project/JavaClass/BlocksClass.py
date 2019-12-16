@@ -16,7 +16,8 @@ class SimpleBlocksClass:
             "HARDNESS": self.bloc.hardness,
             "RESISTANCE": self.bloc.resistance,
             "REGISTRY_NAME": self.bloc.registry_name,
-            "SCRIPT": "\n".join("    " + i for i in self.bloc.script.split("\n"))
+            "SCRIPT": "\n".join("    " + i for i in self.bloc.script.split("\n") if not i.startswith("import")),
+            "EXTRAIMPORTS": "\n".join(i for i in self.bloc.script.split("\n") if i.startswith("import"))
         }
         file = """
 package PACKAGE.blocks;

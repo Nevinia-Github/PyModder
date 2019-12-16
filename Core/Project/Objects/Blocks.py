@@ -28,7 +28,7 @@ class SimpleBlock:
         loot = properties_widgets["loot"][1][1].get()
         resistance = properties_widgets["resistance"][1].get()
         texture = properties_widgets["texture"][1].get()
-        script = properties_widgets["script"][1].get("1.0")
+        script = properties_widgets["script"][1].get("1.0", "end")
         change = False
 
         if name != "" and name != self.name:

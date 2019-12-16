@@ -13,7 +13,8 @@ class SimpleItemClass:
             "MODID": self.project.modid,
             "NAMECLASS": self.item.name.title().replace(" ", "_"),
             "REGISTRY_NAME": self.item.registry_name,
-            "SCRIPT": "\n".join("    " + i for i in self.item.script.split("\n")),
+            "SCRIPT": "\n".join("    " + i for i in self.item.script.split("\n") if not i.startswith("import")),
+            "EXTRAIMPORTS": "\n".join(i for i in self.item.script.split("\n") if i.startswith("import")),
             "ITEMGROUP": "ItemGroup." + self.item.itemgroup if self.item.itemgroup in ITEMGROUP else
             "NAME." + self.item.itemgroup,
             "NAME": self.project.name,
@@ -25,6 +26,7 @@ package PACKAGE.items;
 import PACKAGE.NAME;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.Item;
+EXTRAIMPORTS
 
 public class NAMECLASS extends Item
 {

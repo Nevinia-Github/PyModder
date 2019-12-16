@@ -23,7 +23,7 @@ class ItemGroup:
             search = True
         else:
             search = False
-        script = properties_widgets["script"][1].get()
+        script = properties_widgets["script"][1].get("1.0", "end")
         change = False
 
         if name != "" and name != self.name:

@@ -21,10 +21,11 @@ class MainClass:
                     "NAME": self.project.name,
                     "PACKAGE": "fr.pymodder.MODID",
                     "MODID": self.project.modid,
-                    "SCRIPT": "\n".join("        " + l for l in i.script.split("\n"))
+                    "SCRIPT": "\n".join("    " + j for j in i.script.split("\n") if not j.startswith("import"))
                 }
                 if i.icon not in ICON_BLOCKS and not extra_imports.endswith("Blocks;"):
                     extra_imports += "\nimport PACKAGE.blocks.NAMEBlocks;"
+                extra_imports += "\n" + "\n".join(j for j in i.script.split("\n") if j.startswith("import"))
                 groups += "\n".join([
                     '    public static final ItemGroup NAMEVAR = new ItemGroup("REGISTRY_NAME")',
                     '    {',

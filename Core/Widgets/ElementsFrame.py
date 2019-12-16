@@ -33,6 +33,7 @@ class ElementsFrame(Frame):
         self.ask = AskElement(self.main.screen, self.validate_add)
 
     def validate_add(self, name, type_):
+        print(name)
         object_ = self.main.project.add_object(type_, name)
         self.add_object(object_)
 

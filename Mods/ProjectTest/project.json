@@ -38,7 +38,7 @@
                 "itemgroup": "PROJECTTAB_GROUP",
                 "stacksize": "25",
                 "type": "SimpleItem",
-                "script": "\n"
+                "script": "import net.minecraft.client.util.ITooltipFlag;\nimport net.minecraft.item.ItemStack;\nimport net.minecraft.util.text.ITextComponent;\nimport net.minecraft.util.text.StringTextComponent;\nimport net.minecraft.world.World;\nimport java.util.List;\n\n@Override\npublic void addInformation(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flag) {\n    tooltip.add(new StringTextComponent(\"ProjectItem by PyModder\"));\n}\n\n"
             }
         ]
     }
