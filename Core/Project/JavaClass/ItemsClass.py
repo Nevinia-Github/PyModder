@@ -1,5 +1,6 @@
 import os
 from Core.Utils.Constants import ITEMGROUP
+from Core.Utils.Utils import save_template
 
 
 class SimpleItemClass:
@@ -20,31 +21,8 @@ class SimpleItemClass:
             "NAME": self.project.name,
             "STACKSIZE": self.item.stacksize
         }
-        file = """
-package PACKAGE.items;
-
-import PACKAGE.NAME;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.Item;
-EXTRAIMPORTS
-
-public class NAMECLASS extends Item
-{
-    protected NAMECLASS()
-    {
-        super(new Item.Properties().group(ITEMGROUP).maxStackSize(STACKSIZE));
-        setRegistryName("REGISTRY_NAME");
-    }
-
-SCRIPT
-}
-"""
-        for k, v in replaces.items():
-            file = file.replace(k, v)
-        with open(
-                os.path.join(self.project.paths["Main"], "items", self.item.name.title().replace(" ", "_") + ".java"),
-                "w") as f:
-            f.write(file)
+        file = os.path.join(self.project.paths["Main"], "items", self.item.name.title().replace(" ", "_") + ".java")
+        save_template(file, "SimpleItemClass.txt", replaces)
 
 
 class ItemsClass:
@@ -75,31 +53,5 @@ class ItemsClass:
             "DECLAREITEMS": declare_item,
             "REGISTERITEMS": register_items
         }
-        file = """
-package PACKAGE.items;
-
-import PACKAGE.NAME;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.ObjectHolder;
-
-@Mod.EventBusSubscriber(modid = NAME.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
-public class NAMEItems
-{
-DECLAREITEMS
-
-    @SubscribeEvent
-    public static void registerItem(RegistryEvent.Register<Item> event)
-    {
-REGISTERITEMS
-    }
-}
-"""
-        for k, v in replaces.items():
-            file = file.replace(k, v)
-        os.makedirs(os.path.join(self.project.paths["Main"], "items"), exist_ok=True)
-        with open(os.path.join(self.project.paths["Main"], "items", self.project.name + "Items.java"), "w") as f:
-            f.write(file)
+        file = os.path.join(self.project.paths["Main"], "items", self.project.name + "Items.java")
+        save_template(file, "ItemsClass.txt", replaces)

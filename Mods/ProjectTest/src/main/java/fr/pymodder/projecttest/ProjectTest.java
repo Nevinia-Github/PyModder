@@ -12,6 +12,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import fr.pymodder.projecttest.blocks.ProjectTestBlocks;
 
+
 import java.util.stream.Collectors;
 
 @Mod(ProjectTest.MOD_ID)
@@ -31,16 +32,16 @@ public class ProjectTest
         @Override        public boolean hasSearchBar()
         {
             return true;        }
-                    };
+                };
 
-    
+
     public ProjectTest()
     {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::serverSetup);
     }
-    
+
     private void setup(final FMLCommonSetupEvent event) {
         LOGGER.info("ProjectTest setup completed.");
     }

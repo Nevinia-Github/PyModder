@@ -167,8 +167,9 @@ class Project:
     def edit_objects(self):
         LangJson.EnJson(self).save()
         if len(self.objects["blocks"]):
-            BlocksClass.BlocksClass(self).save()
+            os.makedirs(os.path.join(self.paths["Main"], "blocks"), exist_ok=True)
             os.makedirs(os.path.join(self.paths["Assets"], "textures", "block"), exist_ok=True)
+            BlocksClass.BlocksClass(self).save()
             for i in self.objects["blocks"]:
                 if i.type_ == "SimpleBlock":
                     BlocksClass.SimpleBlocksClass(self, i).save()
@@ -181,8 +182,9 @@ class Project:
                         shutil.copyfile(os.path.join(self.paths["Folder"], "textures", i.texture+".png"),
                                         os.path.join(self.paths["Assets"], "textures", "block", i.texture+".png"))
         if len(self.objects["items"]):
-            ItemsClass.ItemsClass(self).save()
+            os.makedirs(os.path.join(self.paths["Main"], "items"), exist_ok=True)
             os.makedirs(os.path.join(self.paths["Assets"], "textures", "item"), exist_ok=True)
+            ItemsClass.ItemsClass(self).save()
             for i in self.objects["items"]:
                 if i.type_ == "SimpleItem":
                     ItemsClass.SimpleItemClass(self, i).save()

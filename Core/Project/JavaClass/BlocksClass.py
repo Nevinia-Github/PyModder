@@ -1,5 +1,6 @@
 import os
 from Core.Utils.Constants import ITEMGROUP
+from Core.Utils.Utils import save_template
 
 
 class SimpleBlocksClass:
@@ -19,28 +20,8 @@ class SimpleBlocksClass:
             "SCRIPT": "\n".join("    " + i for i in self.bloc.script.split("\n") if not i.startswith("import")),
             "EXTRAIMPORTS": "\n".join(i for i in self.bloc.script.split("\n") if i.startswith("import"))
         }
-        file = """
-package PACKAGE.blocks;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-
-public class NAMECLASS extends Block
-{
-    protected NAMECLASS()
-    {
-        super(Block.Properties.create(Material.MATERIAL).hardnessAndResistance(HARDNESS, RESISTANCE));
-        setRegistryName("REGISTRY_NAME");
-    }
-    
-SCRIPT
-}
-"""
-        for k, v in replaces.items():
-            file = file.replace(k, v)
-        with open(os.path.join(self.project.paths["Main"], "blocks", self.bloc.name.title().replace(" ", "_")+".java"),
-                  "w") as f:
-            f.write(file)
+        file = os.path.join(self.project.paths["Main"], "blocks", self.bloc.name.title().replace(" ", "_")+".java")
+        save_template(file, "SimpleBlockClass.txt", replaces)
 
 
 class BlocksClass:
@@ -77,39 +58,5 @@ class BlocksClass:
             "REGISTERBLOCKS": register_blocks,
             "REGISTERITEMS": register_items
         }
-        file = """
-package PACKAGE.blocks;
-
-import PACKAGE.NAME;
-import net.minecraft.block.Block;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.ObjectHolder;
-
-@Mod.EventBusSubscriber(modid = NAME.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
-public class NAMEBlocks
-{
-DECLAREBLOCKS
-
-    @SubscribeEvent
-    public static void registerBlock(final RegistryEvent.Register<Block> event)
-    {
-REGISTERBLOCKS
-    }
-
-    @SubscribeEvent
-    public static void registerItem(final RegistryEvent.Register<Item> event)
-    {
-REGISTERITEMS
-    }
-}
-"""
-        for k, v in replaces.items():
-            file = file.replace(k, v)
-        os.makedirs(os.path.join(self.project.paths["Main"], "blocks"), exist_ok=True)
-        with open(os.path.join(self.project.paths["Main"], "blocks", self.project.name+"Blocks.java"), "w") as f:
-            f.write(file)
+        file = os.path.join(self.project.paths["Main"], "blocks", self.project.name+"Blocks.java")
+        save_template(file, "BlocksClass.txt", replaces)

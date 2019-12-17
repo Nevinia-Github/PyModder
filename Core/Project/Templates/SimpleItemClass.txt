@@ -1,0 +1,18 @@
+
+package PACKAGE.items;
+
+import PACKAGE.NAME;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.Item;
+EXTRAIMPORTS
+
+public class NAMECLASS extends Item
+{
+    protected NAMECLASS()
+    {
+        super(new Item.Properties().group(ITEMGROUP).maxStackSize(STACKSIZE));
+        setRegistryName("REGISTRY_NAME");
+    }
+
+SCRIPT
+}
